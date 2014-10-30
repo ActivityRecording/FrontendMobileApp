@@ -67,33 +67,32 @@
 
     <script id="templates/patients.html" type="text/ng-template">
         <ion-view title="Leistungsübersicht" ng-controller="PatientsCtrl">
-
         <ion-content class="padding">
-         <div class="row">
+         <!--
+         <div class="row responsiv-lg">
            <div class="col col-50"><a class="button icon ion-radio-waves" href="#/tab/time">Scann</a></div>
            <div class="col col-50"></div>
-         </div>
+         </div>-->
         <br>
-        <p>Patientenliste</p>
         <div class="row">
-        <div class="col col-50">
-        <label class="item item-input item-select">
-        <div class="input-label">Status</div>
-        <select ng-model="patientFilter" 
-            ng-options="patType.name for patType in patTypes"
-            ng-change="updatePatientList(supplierFilter.value, patientFilter.value)">
-        </select>
-        </label>
-        </div>
-        <div class="col col-50">
-        <label class="item item-input item-select">
-        <div class="input-label">Patient</div>
-        <select ng-model="supplierFilter" 
-            ng-options="suppliedCase.name for suppliedCase in suppliedCases"
-            ng-change="updatePatientList(supplierFilter.value, patientFilter.value)">
-        </select>
-        </label>
-        </div>
+          <div class="col col-50">
+          <label class="item item-input item-select icon ion-ios7-timer-outline">
+             <div class="input-label">.</div>
+             <select ng-model="patientFilter" 
+                ng-options="patType.name for patType in patTypes"
+                ng-change="updatePatientList(supplierFilter.value, patientFilter.value)">
+             </select>
+          </label>
+          </div>
+          <div class="col col-50">
+          <label class="item item-input item-select icon ion-ios7-people-outline">
+          <div class="input-label">.</div>
+             <select ng-model="supplierFilter" 
+                ng-options="suppliedCase.name for suppliedCase in suppliedCases"
+                ng-change="updatePatientList(supplierFilter.value, patientFilter.value)">
+             </select>
+          </label>
+          </div>
         </div>
 
         <!-- Patientenliste -->   
@@ -120,9 +119,9 @@
         </div>
         </div>
         <br><br>
-        <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-click="startTimer()">Zeiterfassung starten</a>
+        <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-disabled="running" ng-click="startTimer()">Zeiterfassung starten</a>
         <br><br>
-        <a class="button button-block icon-left ion-ios7-stopwatch" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
+        <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!running" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
         <br><br>
         <a class="button button-block icon-left ion-compose" ng-click="goToCatalogue()">Leistungen zuweisen</a>
         </p>
