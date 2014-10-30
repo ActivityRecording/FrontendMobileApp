@@ -163,16 +163,14 @@ function CatalogueCtrl($scope, $http, $stateParams, StandardCatalogue, Activity,
     $scope.submitData = function(amount, tarmedId) {
         
       //Temporärerer Aufruf -> Ziel via ngResource newActivity.$saveAll 
-      $scope.data = [{activityId: null, number: amount, employeeId: employeeNr, tarmedActivityId: tarmedId, treatmentNumber: $stateParams.fid}];
-      $http.post(url+'activities',$scope.data);
+      //$scope.data = [{activityId: null, number: amount, employeeId: employeeNr, tarmedActivityId: tarmedId, treatmentNumber: $stateParams.fid}];
+      //$http.post(url+'activities/container',$scope.data);
         
-      //var newActivity = new Activity();
-      //  newActivity.$saveAll({},$scope.data);
-      //  var newActivity = new Activity({[{activityId:null, employeeId: employeeNr, 
-      //                         number: 1, tarmedActivityId: item.tarmedActivityId,
-      //                                                     'treatmentNumber': 2001}]});
-      //  newActivity.number = $scope.cnt;
-      //  newActivity.tarmedActivityId = item.tarmedId;    
+      var container = new Activity();
+      container.employeeId = employeeNr;
+      container.treatmentNumber = $stateParams.fid;
+      container.activities = [{tarmedActivityId: tarmedId, number: amount}];
+      container.$save();
 
     };
 

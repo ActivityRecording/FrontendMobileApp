@@ -44,8 +44,13 @@ services.factory('StandardCatalogue', function($resource, url, employeeNr ) {
 });
 
 //Submit captured Activites of employee
+//services.factory('Activity', function($resource, url ) {
+//    return $resource(url+'activities',{}, {
+//        'saveAll': {method: 'POST', isArray: true}
+//    });
+//});
 services.factory('Activity', function($resource, url ) {
-    return $resource(url+'activities',{}, {
-        'saveAll': {method: 'POST', isArray: true}
+    return $resource(url+'activities/container',{}, {
+        
     });
 });
