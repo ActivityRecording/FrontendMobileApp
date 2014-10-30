@@ -97,7 +97,7 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
     })
 
     .state('tabs.catalogue', {
-      url: "/catalogue",
+      url: "/catalogue/:fid",
       controller: CatalogueCtrl,
       views: {
         'home-tab': {

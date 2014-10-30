@@ -60,7 +60,7 @@ function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr) {
  * Controller für das Messen der Zeitstempeln der Leistungserfassung {start/stopp Timer}
  * In $stateParams wird der Parameter FId aus dem PatientsCntrl injected
  */
-function PatientTimeCtrl($scope, $stateParams, $interval, $filter, Patient, TimePeriode, employeeNr) {
+function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patient, TimePeriode, employeeNr) {
 
     //Lokale ControllerVariabeln
     $scope.running = false;
@@ -94,7 +94,7 @@ function PatientTimeCtrl($scope, $stateParams, $interval, $filter, Patient, Time
      * Beim Betätigen des "Zeitmessung starten" Buttons wird diese Funktion aufgerufen
      * Es wird TimePeriode.startTime mit dem aktuellen Timestamp gesetzt
      */
-    $scope.startTimer = function () {
+    $scope.startTimer = function() {
         if (!$scope.running) {
             $scope.running = true;
 
@@ -110,7 +110,7 @@ function PatientTimeCtrl($scope, $stateParams, $interval, $filter, Patient, Time
      * Es wird TimePeriode.endTime mit dem aktuellen Timestamp gesetzt und per
      * Post-Request die TimePeriode an das Backend übermittelt
      */
-    $scope.stoppTimer = function () {
+    $scope.stoppTimer = function() {
         if ($scope.running) {
             newPeriode.endTime = $filter('date')($scope.getTimestamp, 'yyyy-MM-ddTHH:mm:ss');
             $interval.cancel(timer);
@@ -121,6 +121,11 @@ function PatientTimeCtrl($scope, $stateParams, $interval, $filter, Patient, Time
             newPeriode.$save();
         }
     };
+    
+    $scope.goToCatalogue = function(){
+        $state.go('tabs.catalogue', {fid: $stateParams.fid});
+    };
+    
 }
 ;
 
@@ -128,14 +133,13 @@ function PatientTimeCtrl($scope, $stateParams, $interval, $filter, Patient, Time
  * Catalogcontroller: Verwaltet die Tarmed StandardKatalog Leistungen und 
  * übermittelt ausgewählte Leistungen des Benutzers an das Backend
  */
-function CatalogueCtrl($scope, $http, $stateParams, $ionicListDelegate, StandardCatalogue, Activity, employeeNr) {
+function CatalogueCtrl($scope, $http, $stateParams, StandardCatalogue, Activity, employeeNr, url) {
 
     new StandardCatalogue();
     $scope.catItems = StandardCatalogue.query();
     $scope.baseItems = [];
     $scope.specialItems = [];
     $scope.otherItems = [];
-
     $scope.listCanSwipe = true;
     $scope.cnt = 1;
     
@@ -147,10 +151,6 @@ function CatalogueCtrl($scope, $http, $stateParams, $ionicListDelegate, Standard
     $scope.visibleSpecial = false;
     $scope.visibleOthers = false;
 
-    //var newActivity = new Activity();
-        $scope.data = [{activityId: null, number: 3, employeeId: 10101, tarmedActivityId: '00.0010', treatmentNumber: 2001},
-                  {activityId: null, number: 1, employeeId: 10101, tarmedActivityId: '00.0410', treatmentNumber: 2001}]; 
-
     /*
      *  Fügt solange eine zusätzliche Einheit hinzu,
      *  wie es die Katalog-Kardinalität zulässt
@@ -160,11 +160,13 @@ function CatalogueCtrl($scope, $http, $stateParams, $ionicListDelegate, Standard
         else $scope.cnt++;
     };
 
-    $scope.submitData = function () {
+    $scope.submitData = function(amount, tarmedId) {
         
       //Temporärerer Aufruf -> Ziel via ngResource newActivity.$saveAll 
-      $http.post("http://192.168.0.15:8080/MLEBackend/webresources/activities",$scope.data);
+      $scope.data = [{activityId: null, number: amount, employeeId: employeeNr, tarmedActivityId: tarmedId, treatmentNumber: $stateParams.fid}];
+      $http.post(url+'activities',$scope.data);
         
+      //var newActivity = new Activity();
       //  newActivity.$saveAll({},$scope.data);
       //  var newActivity = new Activity({[{activityId:null, employeeId: employeeNr, 
       //                         number: 1, tarmedActivityId: item.tarmedActivityId,

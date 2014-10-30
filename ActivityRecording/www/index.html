@@ -124,12 +124,11 @@
         <br><br>
         <a class="button button-block icon-left ion-ios7-stopwatch" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
         <br><br>
-        <a class="button button-block icon-left ion-compose" href="#/tab/catalogue">Leistungen zuweisen</a>
+        <a class="button button-block icon-left ion-compose" ng-click="goToCatalogue()">Leistungen zuweisen</a>
         </p>
         </ion-content>
         </ion-view>
     </script>
-
 
     <script id="templates/about.html" type="text/ng-template">
         <ion-view title="MLE Info's">
@@ -156,11 +155,11 @@
      <ion-list can-swipe="listCanSwipe" ng-show="visibleBase">
         <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1">
           <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
-             <ion-option-button class="button-light"> {{otherItem.duration}}" </ion-option-button>
+             <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
              <ion-option-button class="button-light ion-plus-round"
                        ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
              <ion-option-button class="button-balanced ion-checkmark-round"
-                       ng-click="submitData()">
+                       ng-click="submitData(cnt, catItem.tarmedId)">
              </ion-option-button>
         </ion-item>
      </ion-list>
@@ -170,26 +169,25 @@
      <ion-list can-swipe="listCanSwipe" ng-show="visibleSpecial">
         <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 2">
           <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
-             <ion-option-button class="button-light"> {{otherItem.duration}}" </ion-option-button>
+             <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
              <ion-option-button class="button-light ion-plus-round"
                        ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
              <ion-option-button class="button-balanced ion-checkmark-round"
-                       ng-click="submitData()">
+                       ng-click="submitData(cnt, catItem.tarmedId)">
              </ion-option-button>
         </ion-item>
      </ion-list>
      
-  
   <!-- Andere Leistungen-->
     <div class="item item-divider" ng-click="toggleCatLists(2)"><h2>Andere Leistungen</h2></div>
      <ion-list can-swipe="listCanSwipe" ng-show="visibleOthers">
         <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 3">
           <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
-             <ion-option-button class="button-light"> {{otherItem.duration}}" </ion-option-button>
+             <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
              <ion-option-button class="button-light ion-plus-round"
                        ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
              <ion-option-button class="button-balanced ion-checkmark-round"
-                       ng-click="submitData()">
+                       ng-click="submitData(cnt, catItem.tarmedId)">
              </ion-option-button>
         </ion-item>
      </ion-list>
