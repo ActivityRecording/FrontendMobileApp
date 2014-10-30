@@ -1,19 +1,13 @@
-/* Empty. Add your own CSS if you like */
-
-
 /*
  * List Item Colors
  */
-
 .editItem {
-  background-color: #8a6de9;
-  color: #4a87ee;
+  background-color: #E1ECFA;
   text-align: center;
-
 }
 
 .newItem{
-    background-color:#C47EFC;
+    background-color:#F0F4FA;
     text-align: center;
 }
 

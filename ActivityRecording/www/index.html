@@ -102,7 +102,7 @@
         ng-class="{ 'editItem' : patient.status === 1,
         'newItem' : patient.status === 2}"
         ng-click="goTo(patient.treatmentNumber)">  
-        <p>{{patient.firstName}} {{patient.lastName}}  PId: {{patient.patientNumber}} FId: {{patient.treatmentNumber}}</p>
+        <p>{{patient.firstName}} {{patient.lastName}} {{patient.dateOfBirth|date:'MM.dd.yyyy'}} [{{patient.patientNumber}}/{{patient.treatmentNumber}}]</p>
         </ion-item>
         </ion-list>
         </ion-content>
