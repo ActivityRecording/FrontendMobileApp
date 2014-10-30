@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title></title>
+
+        <!-- ionic stylesheets -->
+        <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+
+        <!-- ionic/angularjs js -->
+        <script src="lib/ionic/js/ionic.bundle.js"></script>
+        <script src="lib/ionic/js/angular/angular-resource.js"></script>
+
+        <!-- MLE App's js -->
+        <script src="js/directives.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/services.js"></script>     
+        <script src="js/controllers.js"></script>
+        <script src="js/app.js"></script>
+
+        <!-- cordova start script -->
+        <script src="cordova.js"></script>
+
+
+    </head>
+    <body ng-app="ActivityRecordingApp">
+
+    <ion-nav-bar class="tabs-striped tabs-top tabs-background-positive tabs-light">
+    </ion-nav-bar>         
+    <ion-nav-view animation="slide-left-right"></ion-nav-view>
+
+
+    <script id="templates/tabs.html" type="text/ng-template">
+        <ion-tabs class="abs-striped tabs-top tabs-background-positive tabs-light">
+
+        <ion-tab title="Home Bildschrim" icon="ion-home" href="#/tab/home">
+        <ion-nav-view name="home-tab"></ion-nav-view>
+        </ion-tab>
+
+        <ion-tab icon="ion-android-information" href="#/tab/about">
+        <ion-nav-view name="about-tab"></ion-nav-view>
+        </ion-tab>
+
+        <ion-tab icon="ion-android-settings" ui-sref="tabs.contact">
+        <ion-nav-view name="contact-tab"></ion-nav-view>
+        </ion-tab>
+
+        </ion-tabs>
+    </script>
+
+    <script id="templates/home.html" type="text/ng-template">
+        <ion-view title="Home">
+        <ion-content class="padding">
+        <br><br>
+        <a class="button button-block button-positve icon-left ion-clock " href="#/tab/patients">Zeitmessung starten</a>    
+        <br><br>
+        <a class="button button-block button-royal icon-left ion-compose" href="#/tab/patients">Leistungen bearbeiten</a>       
+        <br><br>
+        <a class="button button-block button-positve icon-left ion-checkmark" href="#/tab/time">Leistungen freigeben</a>
+
+        </ion-content>
+        </ion-view>
+    </script>
+
+
+    <script id="templates/patients.html" type="text/ng-template">
+        <ion-view title="Leistungsübersicht" ng-controller="PatientsCtrl">
+
+        <ion-content class="padding">
+         <div class="row">
+           <div class="col col-50"><a class="button icon ion-radio-waves" href="#/tab/time">Scann</a></div>
+           <div class="col col-50"></div>
+         </div>
+        <br>
+        <p>Patientenliste</p>
+        <div class="row">
+        <div class="col col-50">
+        <label class="item item-input item-select">
+        <div class="input-label">Status</div>
+        <select ng-model="patientFilter" 
+            ng-options="patType.name for patType in patTypes"
+            ng-change="updatePatientList(supplierFilter.value, patientFilter.value)">
+        </select>
+        </label>
+        </div>
+        <div class="col col-50">
+        <label class="item item-input item-select">
+        <div class="input-label">Patient</div>
+        <select ng-model="supplierFilter" 
+            ng-options="suppliedCase.name for suppliedCase in suppliedCases"
+            ng-change="updatePatientList(supplierFilter.value, patientFilter.value)">
+        </select>
+        </label>
+        </div>
+        </div>
+
+        <!-- Patientenliste -->   
+        <ion-list>
+        <ion-item ng-repeat="patient in patients" 
+        ng-class="{ 'editItem' : patient.status === 1,
+        'newItem' : patient.status === 2}"
+        ng-click="goTo(patient.treatmentNumber)">  
+        <p>{{patient.firstName}} {{patient.lastName}}  PId: {{patient.patientNumber}} FId: {{patient.treatmentNumber}}</p>
+        </ion-item>
+        </ion-list>
+        </ion-content>
+        </ion-view>
+    </script>
+
+    <script id="templates/patient.html" type="text/ng-template">
+        <ion-view title="Zeiterfassung" ng-controller="PatientTimeCtrl">
+        <ion-content class="padding"> 
+        <div ng-class="{'running' : running === true, 'stopped' : running === false}">
+        <div class="text-center">
+        <h1>{{curPatient.firstName}}  {{curPatient.lastName}} </h1>
+        <h2>Pid: {{curPatient.patientNumber}}, Fid: {{curPatient.treatmentNumber}} </h2>
+        <p>Gemessene Zeit: {{measuredTime}}  Timer: {{sec}}</p>
+        </div>
+        </div>
+        <br><br>
+        <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-click="startTimer()">Zeiterfassung starten</a>
+        <br><br>
+        <a class="button button-block icon-left ion-ios7-stopwatch" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
+        <br><br>
+        <a class="button button-block icon-left ion-compose" href="#/tab/catalogue">Leistungen zuweisen</a>
+        </p>
+        </ion-content>
+        </ion-view>
+    </script>
+
+
+    <script id="templates/about.html" type="text/ng-template">
+        <ion-view title="MLE Info's">
+        <ion-content class="padding">
+        <h2>SoH's Mobile Leistungserfassung</h2>
+        <p>Weitere Informationen finden sie im Intranet</p>
+        <p>
+        <a class="button icon icon-right ion-chevron-right" href="#/tab/navstack">Tabs Nav Stack</a>
+        </p>
+        </ion-content>
+        </ion-view>
+    </script>
+
+    <script id="templates/catalogue.html" type="text/ng-template">
+        <ion-view title="Leistungskatalog" ng-controller="CatalogueCtrl">
+         <ion-nav-back-button class="button-clear"
+            ng-click="goBack()">
+            <i class="ion-arrow-left-c"></i> Back
+        </ion-nav-back-button>
+        <ion-content class="padding">
+        
+   <!-- Grundleistungen-->
+    <div class="item item-divider" ng-click="toggleCatLists(0)"><h2>Grundleistungen</h2></div>
+     <ion-list can-swipe="listCanSwipe" ng-show="visibleBase">
+        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1">
+          <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+             <ion-option-button class="button-light"> {{otherItem.duration}}" </ion-option-button>
+             <ion-option-button class="button-light ion-plus-round"
+                       ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
+             <ion-option-button class="button-balanced ion-checkmark-round"
+                       ng-click="submitData()">
+             </ion-option-button>
+        </ion-item>
+     </ion-list>
+
+  <!-- Spezielle Leistungen -->
+    <div class="item item-divider" ng-click="toggleCatLists(1)"><h2>Spezielle Leistungen</h2></div>
+     <ion-list can-swipe="listCanSwipe" ng-show="visibleSpecial">
+        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 2">
+          <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+             <ion-option-button class="button-light"> {{otherItem.duration}}" </ion-option-button>
+             <ion-option-button class="button-light ion-plus-round"
+                       ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
+             <ion-option-button class="button-balanced ion-checkmark-round"
+                       ng-click="submitData()">
+             </ion-option-button>
+        </ion-item>
+     </ion-list>
+     
+  
+  <!-- Andere Leistungen-->
+    <div class="item item-divider" ng-click="toggleCatLists(2)"><h2>Andere Leistungen</h2></div>
+     <ion-list can-swipe="listCanSwipe" ng-show="visibleOthers">
+        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 3">
+          <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+             <ion-option-button class="button-light"> {{otherItem.duration}}" </ion-option-button>
+             <ion-option-button class="button-light ion-plus-round"
+                       ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
+             <ion-option-button class="button-balanced ion-checkmark-round"
+                       ng-click="submitData()">
+             </ion-option-button>
+        </ion-item>
+     </ion-list>
+ 
+    </script>
+
+    <script id="templates/contact.html" type="text/ng-template">
+        <ion-view title="Einstellungen">
+        <ion-content>
+        <div class="list">
+        <div class="item">
+        @IonicFramework
+        </div>
+        <div class="item">
+        @DriftyTeam
+        </div>
+        </div>
+        </ion-content>
+        </ion-view>
+    </script>
+
+</body>
+</html>

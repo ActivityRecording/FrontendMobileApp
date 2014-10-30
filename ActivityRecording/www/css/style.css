@@ -1,0 +1,30 @@
+/* Empty. Add your own CSS if you like */
+
+
+/*
+ * List Item Colors
+ */
+
+.editItem {
+  background-color: #8a6de9;
+  color: #4a87ee;
+  text-align: center;
+
+}
+
+.newItem{
+    background-color:#C47EFC;
+    text-align: center;
+}
+
+.closedItems{
+    background-color:#4a87ee;
+}
+
+.running{
+    background-color: #AAF246;
+}
+
+.stopped{
+    background-color: #B1DEFA;
+}
