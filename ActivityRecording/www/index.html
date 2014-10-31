@@ -101,7 +101,7 @@
         ng-class="{ 'editItem' : patient.status === 1,
         'newItem' : patient.status === 2}"
         ng-click="goTo(patient.treatmentNumber)">  
-        <p>{{patient.firstName}} {{patient.lastName}} {{patient.dateOfBirth|date:'MM.dd.yyyy'}} [{{patient.patientNumber}}/{{patient.treatmentNumber}}]</p>
+        <p>{{patient.lastName}} {{patient.firstName}} {{patient.dateOfBirth|date:'dd.MM.yyyy'}} [{{patient.patientNumber}}/{{patient.treatmentNumber}}]</p>
         </ion-item>
         </ion-list>
         </ion-content>
@@ -113,16 +113,17 @@
         <ion-content class="padding"> 
         <div ng-class="{'running' : running === true, 'stopped' : running === false}">
         <div class="text-center">
-        <h1>{{curPatient.firstName}}  {{curPatient.lastName}} </h1>
-        <h2>Pid: {{curPatient.patientNumber}}, Fid: {{curPatient.treatmentNumber}} </h2>
+        <h1>{{curPatient.lastName}} {{curPatient.firstName}}</h1>
+        <h3>{{curPatient.dateOfBirth|date:'dd.MM.yyyy'}}</h3>
+        <p>{{curPatient.patientNumber}}/{{curPatient.treatmentNumber}}</p>
         <p>Gemessene Zeit: {{measuredTime}}  Timer: {{sec}}</p>
         </div>
         </div>
         <br><br>
         <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-disabled="running" ng-click="startTimer()">Zeiterfassung starten</a>
-        <br><br>
+        <br>
         <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!running" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
-        <br><br>
+        <br>
         <a class="button button-block icon-left ion-compose" ng-click="goToCatalogue()">Leistungen zuweisen</a>
         </p>
         </ion-content>
