@@ -35,32 +35,32 @@
     <script id="templates/tabs.html" type="text/ng-template">
         <ion-tabs class="abs-striped tabs-top tabs-background-positive tabs-light">
 
-        <ion-tab title="Home Bildschrim" icon="ion-home" href="#/tab/home">
-        <ion-nav-view name="home-tab"></ion-nav-view>
-        </ion-tab>
+            <ion-tab title="Home Bildschrim" icon="ion-home" href="#/tab/home">
+                <ion-nav-view name="home-tab"></ion-nav-view>
+            </ion-tab>
 
-        <ion-tab icon="ion-android-information" href="#/tab/about">
-        <ion-nav-view name="about-tab"></ion-nav-view>
-        </ion-tab>
+            <ion-tab icon="ion-android-information" href="#/tab/about">
+                <ion-nav-view name="about-tab"></ion-nav-view>
+            </ion-tab>
 
-        <ion-tab icon="ion-android-settings" ui-sref="tabs.contact">
-        <ion-nav-view name="contact-tab"></ion-nav-view>
-        </ion-tab>
+            <ion-tab icon="ion-android-settings" ui-sref="tabs.contact">
+                <ion-nav-view name="contact-tab"></ion-nav-view>
+            </ion-tab>
 
         </ion-tabs>
     </script>
 
     <script id="templates/home.html" type="text/ng-template">
         <ion-view title="Home">
-        <ion-content class="padding">
-        <br><br>
-        <a class="button button-block button-positve icon-left ion-clock " href="#/tab/patients">Zeitmessung starten</a>    
-        <br><br>
-        <a class="button button-block button-royal icon-left ion-compose" href="#/tab/patients">Leistungen bearbeiten</a>       
-        <br><br>
-        <a class="button button-block button-positve icon-left ion-checkmark" href="#/tab/time">Leistungen freigeben</a>
-
-        </ion-content>
+            <ion-content class="padding">
+                <br><br>
+                <a class="button button-block button-positve icon-left ion-clock " href="#/tab/patients">Zeitmessung starten</a>    
+                <br><br>
+                <a class="button button-block button-royal icon-left ion-compose" href="#/tab/patients">Leistungen bearbeiten</a>       
+                <br><br>
+                <!-- <a class="button button-block button-positve icon-left ion-checkmark" ng-click="simulateNFCEvent()">Leistungen freigeben</a> -->
+                <a class="button button-block button-positve icon-left ion-checkmark" href="#/tab/time">Leistungen freigeben</a>
+            </ion-content>
         </ion-view>
     </script>
 
@@ -111,12 +111,12 @@
     <script id="templates/patient.html" type="text/ng-template">
         <ion-view title="Zeiterfassung" ng-controller="PatientTimeCtrl">
         <ion-content class="padding"> 
-        <div ng-class="{'running' : running === true, 'stopped' : running === false}">
+        <div ng-class="{'running' : timeService.running() === true, 'stopped' : timeService.running() === false}">
         <div class="text-center">
         <h1>{{curPatient.lastName}} {{curPatient.firstName}}</h1>
         <h3>{{curPatient.dateOfBirth|date:'dd.MM.yyyy'}}</h3>
         <p>{{curPatient.patientNumber}}/{{curPatient.treatmentNumber}}</p>
-        <p>Gemessene Zeit: {{measuredTime}}  Timer: {{sec}}</p>
+        <p>Timer: {{timeService.seconds}}</p>
         </div>
         </div>
         <br><br>

@@ -16,7 +16,7 @@ function MenuController($scope, $route, $routeParams, $location) {
  * Patients Controller returns all treatmentCases, their states and it's patient
  * Filter of Treatment-Types is realized with query State Parameters
  */
-function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr) {
+function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr, TimeService) {
 
     $scope.empNr = employeeNr;
 
@@ -51,6 +51,7 @@ function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr) {
 
     //Transition to PatientTimeCntrl start    
     $scope.goTo = function (id) {
+        TimeService.start(id);
         $state.go('tabs.patTime', {fid: id});
     };
 }
@@ -60,19 +61,12 @@ function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr) {
  * Controller für das Messen der Zeitstempeln der Leistungserfassung {start/stopp Timer}
  * In $stateParams wird der Parameter FId aus dem PatientsCntrl injected
  */
-function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patient, TimePeriode, employeeNr) {
+function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patient, TimePeriode, employeeNr, TimeService) {
 
     //Lokale ControllerVariabeln
-    $scope.running = false;
-    $scope.measuredTime = 0;
-    $scope.sec = 0;
-    var timer;
-
-    // Kategorie Sichtbarkeits Variablen
-    $scope.visibleBase = false;
-    $scope.visibleSpecial = false;
-    $scope.visbleOthers = false;
-
+    $scope.running = TimeService.running();
+    $scope.timeService = TimeService;
+ 
     /*
      * Legt eine Instanz des Patienten-Service an und ermittlet via Get-Request
      * den aktuellen Fall und Identifiziert so den Patienten
@@ -81,28 +75,14 @@ function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patie
     $scope.curPatient = Patient.get({fid: $stateParams.fid});
 
     /*
-     * Legt neue Instanzvariabel des TimePeriode Services an und befüllt diesen
-     * mit der LE-Nr. und der FId des Patienten. Timestamps werden bei entsprechender
-     * UI Actionen gesetzt
-     * @type PatientTimeCtrl.TimePeriode
-     */
-    var newPeriode = new TimePeriode({'timePeriodId': null, 'type': 'TREATMENT',
-        'treatmentNumber': $stateParams.fid,
-        'employeeId': employeeNr});
-
-    /*
      * Beim Betätigen des "Zeitmessung starten" Buttons wird diese Funktion aufgerufen
      * Es wird TimePeriode.startTime mit dem aktuellen Timestamp gesetzt
      */
     $scope.startTimer = function() {
-        if (!$scope.running) {
-            $scope.running = true;
-
-            timer = $interval(function () {
-                $scope.sec++;
-            }, 1000);
+        if (!TimeService.running()) {
+            TimeService.start($stateParams.fid);
+            $scope.running = TimeService.running();
         }
-        newPeriode.startTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
     };
 
     /*
@@ -111,14 +91,9 @@ function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patie
      * Post-Request die TimePeriode an das Backend übermittelt
      */
     $scope.stoppTimer = function() {
-        if ($scope.running) {
-            newPeriode.endTime = $filter('date')($scope.getTimestamp, 'yyyy-MM-ddTHH:mm:ss');
-            $interval.cancel(timer);
-            $scope.measuredTime += $scope.sec;
-            $scope.sec = 0;
-            $scope.running = false;
-            newPeriode.endTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
-            newPeriode.$save();
+        if (TimeService.running()) {
+            TimeService.stop();
+            $scope.running = TimeService.running();
         }
     };
     
@@ -203,6 +178,15 @@ function CatalogueCtrl($scope, $http, $stateParams, StandardCatalogue, Activity,
 }
 ;
 
-function HomeTabCtrl($scope) {
-}
-;
+function HomeTabCtrl($scope, $state, TimeService) {
+    // Just for Testing
+    $scope.simulateNFCEvent = function(){
+        setTimeout(
+            function(){
+                //alert('NFC Simulation started');
+                TimeService.start(2001);
+                $state.go('tabs.patTime',{fid: 2001});
+            }, 
+            5000);
+    };
+};

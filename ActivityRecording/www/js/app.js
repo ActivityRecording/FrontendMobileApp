@@ -35,10 +35,14 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             var fid = obj.substring(11,15);
         
             if($state.includes('tabs.home')){
-                  $state.go('tabs.patTime',{fid: fid});
+                $state.go('tabs.patTime',{fid: fid});
                 
-                  //controllers.PatientTimeCtrl.startTimer();
-                  //angular.element(document.getElementById('PatientTimeCtrl')).scope().startTimer();
+                //controllers.PatientTimeCtrl.startTimer();
+                //angular.element(document.getElementById('PatientTimeCtrl')).scope().startTimer();
+                
+//                var element = angular.element($('#PatientTimeCtrl'));
+//                element.scope().startTimer();
+//                element.scope().$apply();
             };
             
 
@@ -129,8 +133,55 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
 });
 
 
-ActivityRecoridngApp.factory('corovaService', function() {
-  document.addEventListener("deviceready", function() {
-    console.log('** cordova ready **');
-  }, false);
-  });
+ActivityRecoridngApp
+    .factory('corovaService', function() {
+        document.addEventListener("deviceready", function() {
+            console.log('** cordova ready **');
+        }, false);
+    })
+    .factory('TimeService', function($filter, $interval) {
+        
+        var service = {};
+        service.seconds = 0;
+        service.fid = null;
+        var timer;
+        var startTime;
+        var stopTime;
+        
+        service.running = function(){
+            return service.fid != null;
+        }; 
+        
+        var startTimer = function () {
+            service.seconds = 0;
+            timer = $interval(function() {
+                service.seconds++;
+            }, 1000);
+        };
+        
+        service.start = function(newFid){
+            if (service.fid == newFid){
+                service.stop();
+                return;
+            } else if (service.fid != null){
+                service.stop();
+            }
+            this.startTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
+            this.stopTime = null;
+            service.fid = newFid;
+            startTimer();
+        };
+        
+        service.stop = function(){
+            this.stopTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
+            // Rest Service call mit fid
+            service.fid = null;
+            this.startTime = null;
+            this.stopTime = null;
+            $interval.cancel(timer);
+            timer = null;
+            service.seconds = 0;
+        };
+        
+        return service;
+    });
