@@ -35,6 +35,7 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             var fid = obj.substring(11,15);
         
             if($state.includes('tabs.home')){
+                TimeService.start(fid);
                 $state.go('tabs.patTime',{fid: fid});
                 
                 //controllers.PatientTimeCtrl.startTimer();
