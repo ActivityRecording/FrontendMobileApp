@@ -13,8 +13,9 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
 /*
  * ionic wrapper to cordova's onDeviceRedy function
  * it will be called, as soon as the hole platfrom is ready by the device
+ * Daher wird das NFC-Plugin via NDEF-Listener hier instanziert
  */
-.run(function($ionicPlatform, $state) {
+.run(function($ionicPlatform, $state, TimeService) {
   $ionicPlatform.ready(function() {
       console.log('ionicPlattform ready');
       
@@ -30,23 +31,31 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             // assuming the first record in the message has 
             // a payload that can be converted to a string.
             var obj = nfc.bytesToString(ndefMessage[0].payload).substring(3);
-            alert(obj.toString());
-           // var pid = obj.substring(5,6);
+            //alert(obj.toString());
+            
+            var pid = obj.substring(3,6);
             var fid = obj.substring(11,15);
-        
+            alert('Patienten-ID: ' +pid +' Fall-ID: '+fid);
+            
+            //NFC-Scan im Home Bildschrim
             if($state.includes('tabs.home')){
                 TimeService.start(fid);
-                $state.go('tabs.patTime',{fid: fid});
-                
-                //controllers.PatientTimeCtrl.startTimer();
-                //angular.element(document.getElementById('PatientTimeCtrl')).scope().startTimer();
-                
-//                var element = angular.element($('#PatientTimeCtrl'));
-//                element.scope().startTimer();
-//                element.scope().$apply();
+                $state.go('tabs.patTime',{fid: fid});   
             };
             
-
+            //NFC-Scann aus der Patientenübersicht
+              if($state.includes('tabs.patients')){
+                  
+              }
+            //NFC-Scann aus der Zeit und Leistungserassungsübersicht
+              if($state.includes('tabs.patTime')){   
+//                angular.element(document.getElementById('PatientTimeCtrl')).scope().updateCurrentPatient(fid);
+//                angular.element(document.getElementById('PatientTimeCtrl')).scope().$apply();  
+                TimeService.start(fid); 
+                $state.go('tabs.patTime',{fid: fid});
+              }
+            
+            
         }, 
         function () { // success callback
         console.log('Waiting for NDEF tag"');
@@ -140,49 +149,3 @@ ActivityRecoridngApp
             console.log('** cordova ready **');
         }, false);
     })
-    .factory('TimeService', function($filter, $interval) {
-        
-        var service = {};
-        service.seconds = 0;
-        service.fid = null;
-        var timer;
-        var startTime;
-        var stopTime;
-        
-        service.running = function(){
-            return service.fid != null;
-        }; 
-        
-        var startTimer = function () {
-            service.seconds = 0;
-            timer = $interval(function() {
-                service.seconds++;
-            }, 1000);
-        };
-        
-        service.start = function(newFid){
-            if (service.fid == newFid){
-                service.stop();
-                return;
-            } else if (service.fid != null){
-                service.stop();
-            }
-            this.startTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
-            this.stopTime = null;
-            service.fid = newFid;
-            startTimer();
-        };
-        
-        service.stop = function(){
-            this.stopTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
-            // Rest Service call mit fid
-            service.fid = null;
-            this.startTime = null;
-            this.stopTime = null;
-            $interval.cancel(timer);
-            timer = null;
-            service.seconds = 0;
-        };
-        
-        return service;
-    });

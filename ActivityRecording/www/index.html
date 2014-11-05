@@ -120,11 +120,13 @@
         </div>
         </div>
         <br><br>
-        <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-disabled="running" ng-click="startTimer()">Zeiterfassung starten</a>
+        <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-disabled="timeService.running()" ng-click="startTimer()">Zeiterfassung starten</a>
         <br>
-        <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!running" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
+        <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!timeService.running()" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
         <br>
         <a class="button button-block icon-left ion-compose" ng-click="goToCatalogue()">Leistungen zuweisen</a>
+        </p>
+        <a class="button button-block icon-left ion-compose" ng-click="updateCurrentPatient(2003)">Update pat</a>
         </p>
         </ion-content>
         </ion-view>

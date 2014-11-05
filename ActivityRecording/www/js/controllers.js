@@ -50,9 +50,9 @@ function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr, TimeServ
     };
 
     //Transition to PatientTimeCntrl start    
-    $scope.goTo = function (id) {
-        TimeService.start(id);
-        $state.go('tabs.patTime', {fid: id});
+    $scope.goTo = function (fid) {
+        TimeService.init(fid);
+        $state.go('tabs.patTime', {fid: fid});
     };
 }
 ;
@@ -66,13 +66,20 @@ function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patie
     //Lokale ControllerVariabeln
     $scope.running = TimeService.running();
     $scope.timeService = TimeService;
+    $scope.fid = $stateParams.fid;
  
     /*
      * Legt eine Instanz des Patienten-Service an und ermittlet via Get-Request
      * den aktuellen Fall und Identifiziert so den Patienten
      */
-    new Patient();
-    $scope.curPatient = Patient.get({fid: $stateParams.fid});
+    $scope.curPatient = $scope.timeService.curPatient;
+//    new Patient();
+//    $scope.curPatient = Patient.get({fid: $scope.fid});
+
+//    $scope.$watch(‘patientChange’, function() {
+//DemoService.updateBottomValue($scope.sharedData, $scope.bottomValue);
+//});
+
 
     /*
      * Beim Betätigen des "Zeitmessung starten" Buttons wird diese Funktion aufgerufen
@@ -80,7 +87,7 @@ function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patie
      */
     $scope.startTimer = function() {
         if (!TimeService.running()) {
-            TimeService.start($stateParams.fid);
+            TimeService.start($scope.fid);
             $scope.running = TimeService.running();
         }
     };
@@ -97,6 +104,19 @@ function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patie
         }
     };
     
+    $scope.updateCurrentPatient = function(fid){
+         $scope.fid = fid;
+         TimeService.updatePatient(fid);
+        // $scope.curPatient = $scope.timeService.curPatient;
+       //  $scope.curPatient = Patient.get({fid: $scope.fid});
+    };
+    
+    
+    $scope.$on('patientUpdated', function(){
+        $scope.curPatient = $scope.timeService.curPatient;
+    });
+    
+    
     $scope.goToCatalogue = function(){
         $state.go('tabs.catalogue', {fid: $stateParams.fid});
     };
@@ -108,7 +128,7 @@ function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patie
  * Catalogcontroller: Verwaltet die Tarmed StandardKatalog Leistungen und 
  * übermittelt ausgewählte Leistungen des Benutzers an das Backend
  */
-function CatalogueCtrl($scope, $http, $stateParams, StandardCatalogue, Activity, employeeNr, url) {
+function CatalogueCtrl($scope, $stateParams, $ionicListDelegate, StandardCatalogue, Activity, employeeNr) {
 
     new StandardCatalogue();
     $scope.catItems = StandardCatalogue.query();
@@ -136,17 +156,12 @@ function CatalogueCtrl($scope, $http, $stateParams, StandardCatalogue, Activity,
     };
 
     $scope.submitData = function(amount, tarmedId) {
-        
-      //Temporärerer Aufruf -> Ziel via ngResource newActivity.$saveAll 
-      //$scope.data = [{activityId: null, number: amount, employeeId: employeeNr, tarmedActivityId: tarmedId, treatmentNumber: $stateParams.fid}];
-      //$http.post(url+'activities/container',$scope.data);
-        
       var container = new Activity();
       container.employeeId = employeeNr;
       container.treatmentNumber = $stateParams.fid;
       container.activities = [{tarmedActivityId: tarmedId, number: amount}];
       container.$save();
-
+      $ionicListDelegate.closeOptionButtons();
     };
 
     $scope.toggleCatLists = function (type) {
