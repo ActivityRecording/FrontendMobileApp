@@ -43,12 +43,6 @@ services.factory('StandardCatalogue', function($resource, url, employeeNr ) {
     });
 });
 
-//Submit captured Activites of employee
-//services.factory('Activity', function($resource, url ) {
-//    return $resource(url+'activities',{}, {
-//        'saveAll': {method: 'POST', isArray: true}
-//    });
-//});
 services.factory('Activity', function($resource, url ) {
     return $resource(url+'activities/container',{}, {
         
@@ -61,74 +55,73 @@ services.factory('TimeService', function($rootScope, $filter, $interval, Patient
         service.seconds = 0;
         service.fid = null;
         service.curPatient = null;
-        service.isRunning = false;
-        var timer;
-        var startTime;
-        var stopTime;
+        service.running = false;
+        
+        var self = this;
+        self.timer = null;
+        self.startTime = null;
+        self.stopTime = null;
         
         new Patient();
-        var newPeriode = new TimePeriode({'timePeriodId': null, 'type': 'TREATMENT',
-                                          'employeeId': employeeNr});
+        self.newPeriode = new TimePeriode({
+                'timePeriodId': null, 
+                'type': 'TREATMENT',
+                'employeeId': employeeNr});
         
-        service.running = function(){
-            return service.isRunning === true;
-        }; 
-        
-        var startTimer = function () {
+        self.startTimer = function() {
             service.seconds = 0;
-            timer = $interval(function() {
+            self.timer = $interval(function() {
                 service.seconds++;
             }, 1000);
         };
-        var updatePatient = function(fid){
+        self.updatePatient = function(fid){
             service.curPatient = Patient.get({fid: fid});
         }; 
-        var submitTimePeriode = function(){
-            newPeriode.treatmentNumber = service.fid;
-            newPeriode.startTime = startTime;
-            newPeriode.endTime = stopTime;
-            newPeriode.$save();
+        self.submitTimePeriode = function(){
+            self.newPeriode.treatmentNumber = service.fid;
+            self.newPeriode.startTime = self.startTime;
+            self.newPeriode.endTime = self.stopTime;
+            self.newPeriode.$save();
         };
         
         service.init = function(fid){
-            startTime = null;
-            stopTime = null;
+            self.startTime = null;
+            self.stopTime = null;
             service.fid = fid;
             service.seconds = 0;
-            service.isRunning = false;
-            this.updatePatient(fid); 
+            service.running = false;
+            self.updatePatient(fid); 
         };
         
 
         service.start = function(newFid){
-            if (service.fid === newFid && service.isRunning){
+            if (service.fid === newFid && service.running){
                 service.stop();
                 return;
             } else if (service.fid !== null){
                 service.stop();
             }
-            startTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
-            stopTime = null;
+            self.startTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
+            self.stopTime = null;
             service.fid = newFid;
-            service.isRunning = true;
-            this.updatePatient(newFid); 
-            startTimer();
+            service.running = true;
+            self.updatePatient(newFid); 
+            self.startTimer();
         };
         
         service.stop = function(){
-            stopTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
-            submitTimePeriode();
+            self.stopTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
+            self.submitTimePeriode();
             service.fid = null;
-            service.isRunning = false;
-            this.startTime = null;
-            this.stopTime = null;
-            $interval.cancel(timer);
-            this.timer = null;
+            service.running = false;
+            self.startTime = null;
+            self.stopTime = null;
+            $interval.cancel(self.timer);
+            self.timer = null;
             service.seconds = 0;
         };
         service.updatePatient = function(fid){
-            updatePatient(fid);
-            $rootScope.$broadcast("patientUpdated");
+            self.updatePatient(fid);
         }; 
         return service;
     });

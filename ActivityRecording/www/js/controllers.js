@@ -51,7 +51,7 @@ function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr, TimeServ
 
     //Transition to PatientTimeCntrl start    
     $scope.goTo = function (fid) {
-        TimeService.init(fid);
+        TimeService.start(fid);
         $state.go('tabs.patTime', {fid: fid});
     };
 }
@@ -64,31 +64,16 @@ function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr, TimeServ
 function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patient, TimePeriode, employeeNr, TimeService) {
 
     //Lokale ControllerVariabeln
-    $scope.running = TimeService.running();
     $scope.timeService = TimeService;
     $scope.fid = $stateParams.fid;
  
-    /*
-     * Legt eine Instanz des Patienten-Service an und ermittlet via Get-Request
-     * den aktuellen Fall und Identifiziert so den Patienten
-     */
-    $scope.curPatient = $scope.timeService.curPatient;
-//    new Patient();
-//    $scope.curPatient = Patient.get({fid: $scope.fid});
-
-//    $scope.$watch(‘patientChange’, function() {
-//DemoService.updateBottomValue($scope.sharedData, $scope.bottomValue);
-//});
-
-
     /*
      * Beim Betätigen des "Zeitmessung starten" Buttons wird diese Funktion aufgerufen
      * Es wird TimePeriode.startTime mit dem aktuellen Timestamp gesetzt
      */
     $scope.startTimer = function() {
-        if (!TimeService.running()) {
+        if (!TimeService.running) {
             TimeService.start($scope.fid);
-            $scope.running = TimeService.running();
         }
     };
 
@@ -98,23 +83,15 @@ function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patie
      * Post-Request die TimePeriode an das Backend übermittelt
      */
     $scope.stoppTimer = function() {
-        if (TimeService.running()) {
+        if (TimeService.running) {
             TimeService.stop();
-            $scope.running = TimeService.running();
         }
     };
     
     $scope.updateCurrentPatient = function(fid){
          $scope.fid = fid;
          TimeService.updatePatient(fid);
-        // $scope.curPatient = $scope.timeService.curPatient;
-       //  $scope.curPatient = Patient.get({fid: $scope.fid});
     };
-    
-    
-    $scope.$on('patientUpdated', function(){
-        $scope.curPatient = $scope.timeService.curPatient;
-    });
     
     
     $scope.goToCatalogue = function(){
