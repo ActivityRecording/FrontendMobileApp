@@ -32,7 +32,7 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             
             var pid = obj.substring(3,6);
             var fid = obj.substring(11,15);
-            alert('Patienten-ID: ' +pid +' Fall-ID: '+fid);
+            //alert('Patienten-ID: ' +pid +' Fall-ID: '+fid);
             
             //NFC-Scan im Home Bildschrim
             if($state.includes('tabs.home')){
@@ -53,7 +53,7 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
         }, 
         function () { // success callback
         console.log('Waiting for NDEF tag"');
-         //   alert("Waiting for NDEF tag");
+            // alert("Waiting for NDEF tag");
         },
         function (error) { // error callback
            console.log('Error adding NDEF listener ' + JSON.stringify(error));
