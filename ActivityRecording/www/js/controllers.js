@@ -61,7 +61,7 @@ function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr, TimeServ
  * Controller für das Messen der Zeitstempeln der Leistungserfassung {start/stopp Timer}
  * In $stateParams wird der Parameter FId aus dem PatientsCntrl injected
  */
-function PatientTimeCtrl($scope, $state, $stateParams, $interval, $filter, Patient, TimePeriode, employeeNr, TimeService) {
+function PatientTimeCtrl($scope, $state, $stateParams, TimeService) {
 
     //Lokale ControllerVariabeln
     $scope.timeService = TimeService;

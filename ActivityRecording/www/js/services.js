@@ -49,7 +49,7 @@ services.factory('Activity', function($resource, url ) {
     });
 });
 
-services.factory('TimeService', function($rootScope, $filter, $interval, Patient, TimePeriode, employeeNr) {
+services.factory('TimeService', function($filter, $interval, Patient, TimePeriode, employeeNr) {
         
         var service = {};
         service.seconds = 0;
@@ -84,21 +84,11 @@ services.factory('TimeService', function($rootScope, $filter, $interval, Patient
             self.newPeriode.$save();
         };
         
-        service.init = function(fid){
-            self.startTime = null;
-            self.stopTime = null;
-            service.fid = fid;
-            service.seconds = 0;
-            service.running = false;
-            self.updatePatient(fid); 
-        };
-        
-
         service.start = function(newFid){
             if (service.fid === newFid && service.running){
                 service.stop();
                 return;
-            } else if (service.fid !== null){
+            } else if (service.fid){
                 service.stop();
             }
             self.startTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');

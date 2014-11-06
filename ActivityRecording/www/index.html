@@ -58,8 +58,8 @@
                 <br><br>
                 <a class="button button-block button-positve icon-left ion-compose" href="#/tab/patients">Leistungen bearbeiten</a>       
                 <br><br>
-                <a class="button button-block button-positve icon-left ion-checkmark" ng-click="simulateNFCEvent()">Leistungen freigeben</a>
-                <!-- <a class="button button-block button-positve icon-left ion-checkmark" href="#/tab/time">Leistungen freigeben</a> -->
+                <!-- <a class="button button-block button-positve icon-left ion-checkmark" ng-click="simulateNFCEvent()">Leistungen freigeben</a> -->
+                <a class="button button-block button-positve icon-left ion-checkmark" href="#/tab/time">Leistungen freigeben</a>
             </ion-content>
         </ion-view>
     </script>
@@ -125,9 +125,6 @@
         <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!timeService.running" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
         <br>
         <a class="button button-block icon-left ion-compose" ng-click="goToCatalogue()">Leistungen zuweisen</a>
-        </p>
-        <a class="button button-block icon-left ion-compose" ng-click="updateCurrentPatient(2003)">Update pat</a>
-        </p>
         </ion-content>
         </ion-view>
     </script>

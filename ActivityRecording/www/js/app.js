@@ -25,9 +25,6 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             var tag = nfcEvent.tag,
                 ndefMessage = tag.ndefMessage;
 
-            // the payload from each record
-           //alert(JSON.stringify(ndefMessage));
-
             // assuming the first record in the message has 
             // a payload that can be converted to a string.
             var obj = nfc.bytesToString(ndefMessage[0].payload).substring(3);
@@ -49,12 +46,9 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
               }
             //NFC-Scann aus der Zeit und Leistungserassungsübersicht
               if($state.includes('tabs.patTime')){   
-//                angular.element(document.getElementById('PatientTimeCtrl')).scope().updateCurrentPatient(fid);
-//                angular.element(document.getElementById('PatientTimeCtrl')).scope().$apply();  
                 TimeService.start(fid); 
                 $state.go('tabs.patTime',{fid: fid});
               }
-            
             
         }, 
         function () { // success callback
