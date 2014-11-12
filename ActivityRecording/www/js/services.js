@@ -6,55 +6,51 @@
 var services = angular.module('services', ['ngResource', 'config']);
 
 //Get Patient-TreatmentCases with Queryparameter State
-services.factory('Patients', function($resource, url, stateStr) {
-    return $resource(url+'patients'+stateStr+':stateParam',{stateParam: '@stateParam'}, {
-        'update': {method: 'PUT'}
+services.factory('Patients', function($resource, ConfigService, stateStr) {
+    return $resource(ConfigService.url+'patients'+stateStr+':stateParam',{stateParam: '@stateParam'}, {
     });
 });
 
 //Get Patient-TreatmentCases per Supplier and Queryparameter State
-services.factory('MyPatients', function($resource, url, stateStr) {
-    return $resource(url+'patients/supplier/:supplierParam'+stateStr+':stateParam',
+services.factory('MyPatients', function($resource, ConfigService, stateStr) {
+    return $resource(ConfigService.url+'patients/supplier/:supplierParam'+stateStr+':stateParam',
                       {supplierParam: '@supplier', stateParam: '@stateParam'}, {
-        'update': {method: 'PUT'}
     });
 });
 
 //Get Patient-TreatmentCase by TeatmentNumber
-services.factory('Patient', function($resource, url ) {
-    return $resource(url+'patients/treatment/:fid',{fid: '@fid'}, {
-        'update': {method: 'PUT'}
+services.factory('Patient', function($resource, ConfigService ) {
+    return $resource(ConfigService.url+'patients/treatment/:fid',{fid: '@fid'}, {
     });
 });
-
 
 //Time Periode Ressource for sending the measuerments to the backend
-services.factory('TimePeriode', function($resource, url ) {
-    return $resource(url+'timePeriods', {
-//        'update': {method: 'PUT'}
+services.factory('TimePeriode', function($resource, ConfigService ) {
+    return $resource(ConfigService.getUrl()+'timePeriods', {
     });
 });
-
 
 //Get StandardActivites by EmployeeNumber
-services.factory('StandardCatalogue', function($resource, url, employeeNr ) {
-    return $resource(url+'standardActivities/supplier/'+employeeNr, {
-//        'update': {method: 'PUT'}
+services.factory('StandardCatalogue', function($resource, ConfigService, employeeNr ) {
+    return $resource(ConfigService.url+'standardActivities/supplier/'+employeeNr, {
     });
 });
 
-services.factory('Activity', function($resource, url ) {
-    return $resource(url+'activities/container',{}, {
-        
+services.factory('Activity', function($resource, ConfigService ) {
+    return $resource(ConfigService.url+'activities/container',{}, {
     });
 });
 
-services.factory('TimeService', function($filter, $interval, Patient, TimePeriode, employeeNr) {
+services.factory('Activity2', function($resource, ConfigService ) {
+    return $resource(ConfigService.url+'activities',{}, {
+    });
+});
+
+services.factory('TimeService', function($filter, $interval, PatientService, TimePeriode, ConfigService) {
         
         var service = {};
         service.seconds = 0;
         service.fid = null;
-        service.curPatient = null;
         service.running = false;
         
         var self = this;
@@ -62,11 +58,10 @@ services.factory('TimeService', function($filter, $interval, Patient, TimePeriod
         self.startTime = null;
         self.stopTime = null;
         
-        new Patient();
         self.newPeriode = new TimePeriode({
                 'timePeriodId': null, 
                 'type': 'TREATMENT',
-                'employeeId': employeeNr});
+                'employeeId': ConfigService.empNr});
         
         self.startTimer = function() {
             service.seconds = 0;
@@ -74,9 +69,7 @@ services.factory('TimeService', function($filter, $interval, Patient, TimePeriod
                 service.seconds++;
             }, 1000);
         };
-        self.updatePatient = function(fid){
-            service.curPatient = Patient.get({fid: fid});
-        }; 
+  
         self.submitTimePeriode = function(){
             self.newPeriode.treatmentNumber = service.fid;
             self.newPeriode.startTime = self.startTime;
@@ -95,7 +88,7 @@ services.factory('TimeService', function($filter, $interval, Patient, TimePeriod
             self.stopTime = null;
             service.fid = newFid;
             service.running = true;
-            self.updatePatient(newFid); 
+            PatientService.updatePatient(newFid); 
             self.startTimer();
         };
         
@@ -110,8 +103,46 @@ services.factory('TimeService', function($filter, $interval, Patient, TimePeriod
             self.timer = null;
             service.seconds = 0;
         };
-        service.updatePatient = function(fid){
-            self.updatePatient(fid);
-        }; 
         return service;
     });
+    
+    
+services.factory('PatientService', function(Patient){
+    var service = {};
+    service.curPatient = null;
+    
+    var self = this;
+    self.fid = null;   
+    
+    service.updatePatient = function(fid){
+        if(fid !== self.fid){
+            service.curPatient = Patient.get({fid: fid});
+            self.fid = fid;
+        }
+    }; 
+    return service;
+});
+
+    
+services.factory('ConfigService', function(employeeNr, url){
+    var service = {};
+    service.url = url;
+    service.empNr = employeeNr;
+    
+    service.getUrl = function (){ 
+        return service.url;
+    };
+    
+    service.setUrl = function (url){
+        service.url = url;
+    };
+    
+    service.getEmployeeNr = function (){
+        return service.empNr;
+    };
+    
+    service.setEmployeeNr = function (empNr){
+        service.empNr = empNr;
+    };
+    return service;
+});

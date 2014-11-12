@@ -16,9 +16,10 @@ function MenuController($scope, $route, $routeParams, $location) {
  * Patients Controller returns all treatmentCases, their states and it's patient
  * Filter of Treatment-Types is realized with query State Parameters
  */
-function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr, TimeService) {
+function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, ConfigService, TimeService, PatientService) {
 
-    $scope.empNr = employeeNr;
+    $scope.empNr = ConfigService.empNr;
+    $scope.edit = $stateParams.edit;
 
     //Select Option Model
     $scope.patTypes = [
@@ -49,22 +50,29 @@ function PatientsCtrl($scope, $state, Patients, MyPatients, employeeNr, TimeServ
         }
     };
 
-    //Transition to PatientTimeCntrl start    
+    //Transition to PatientTimeCtrl start or to EditOverviewCntrl    
     $scope.goTo = function (fid) {
-        TimeService.start(fid);
-        $state.go('tabs.patTime', {fid: fid});
+        if($stateParams.edit == 0){
+            PatientService.updatePatient(fid);
+            TimeService.start(fid);
+            $state.go('tabs.patTime', {fid: fid}); 
+        }else{
+             $state.go('tabs.editoverview', {fid: fid}); 
+        }
     };
 }
 ;
+
 
 /*
  * Controller für das Messen der Zeitstempeln der Leistungserfassung {start/stopp Timer}
  * In $stateParams wird der Parameter FId aus dem PatientsCntrl injected
  */
-function PatientTimeCtrl($scope, $state, $stateParams, TimeService) {
+function PatientTimeCtrl($scope, $state, $stateParams, TimeService, PatientService) {
 
     //Lokale ControllerVariabeln
     $scope.timeService = TimeService;
+    $scope.patientService = PatientService;
     $scope.fid = $stateParams.fid;
  
     /*
@@ -86,13 +94,7 @@ function PatientTimeCtrl($scope, $state, $stateParams, TimeService) {
         if (TimeService.running) {
             TimeService.stop();
         }
-    };
-    
-    $scope.updateCurrentPatient = function(fid){
-         $scope.fid = fid;
-         TimeService.updatePatient(fid);
-    };
-    
+    };   
     
     $scope.goToCatalogue = function(){
         $state.go('tabs.catalogue', {fid: $stateParams.fid});
@@ -114,6 +116,7 @@ function CatalogueCtrl($scope, $stateParams, $ionicListDelegate, StandardCatalog
     $scope.otherItems = [];
     $scope.listCanSwipe = true;
     $scope.cnt = 1;
+    $scope.sent = false;
     
     /*
      * Initial werden alle Leistungsgruppen ausgeblendet,
@@ -138,6 +141,7 @@ function CatalogueCtrl($scope, $stateParams, $ionicListDelegate, StandardCatalog
       container.treatmentNumber = $stateParams.fid;
       container.activities = [{tarmedActivityId: tarmedId, number: amount}];
       container.$save();
+      $scope.sent = true;
       $ionicListDelegate.closeOptionButtons();
     };
 
@@ -170,15 +174,26 @@ function CatalogueCtrl($scope, $stateParams, $ionicListDelegate, StandardCatalog
 }
 ;
 
-function HomeTabCtrl($scope, $state, TimeService) {
-    // Just for Testing
-    $scope.simulateNFCEvent = function(){
-        setTimeout(
-            function(){
-                //alert('NFC Simulation started');
-                TimeService.start(2001);
-                $state.go('tabs.patTime',{fid: 2001});
-            }, 
-            5000);
+
+function EditOverviewCtrl($scope, $stateParams, Activity2){
+    $scope.fid = $stateParams.fid;
+    new Activity2();
+    $scope.activites = Activity2.query();
+};
+
+
+function HomeTabCtrl($scope, $state) {
+    $scope.goToPatients= function(mode){$state.go('tabs.patients', {edit: mode});};
+};
+
+
+
+function ConfigCtrl($scope, ConfigService) {
+    $scope.config = ConfigService;
+    
+    //nur benötigt, wenn wir die Implementation via ein UI-Button machen wollen
+    $scope.updateConfig = function(){
+        ConfigService.setUrl($scope.config.url);
+        ConfigService.setEmployeeNr($scope.config.empNr);
     };
 };

@@ -30,7 +30,6 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             var obj = nfc.bytesToString(ndefMessage[0].payload).substring(3);
             //alert(obj.toString());
             
-            var pid = obj.substring(3,6);
             var fid = obj.substring(11,15);
             //alert('Patienten-ID: ' +pid +' Fall-ID: '+fid);
             
@@ -41,14 +40,19 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             };
             
             //NFC-Scann aus der Patientenübersicht
-              if($state.includes('tabs.patients')){
-                  
-              }
-            //NFC-Scann aus der Zeit und Leistungserassungsübersicht
-              if($state.includes('tabs.patTime')){   
+            if($state.includes('tabs.patients')){
                 TimeService.start(fid); 
-                $state.go('tabs.patTime',{fid: fid});
-              }
+                $state.go('tabs.patTime',{fid: fid});   
+            }
+            //NFC-Scann aus der Zeit und Leistungserassungsübersicht
+            if($state.includes('tabs.patTime')){   
+                TimeService.start(fid); 
+            }
+            //NFC-Scann aus der Leistungskatalog
+            if($state.includes('tabs.catalogue')){
+                TimeService.start(fid); 
+                $state.go('tabs.patTime',{fid: fid});   
+            }
             
         }, 
         function () { // success callback
@@ -60,7 +64,7 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             // alert("Error adding NDEF listener " + JSON.stringify(error));
         }
     );
-  })
+  });
 })
 
 .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -74,6 +78,7 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
     })
     .state('tabs.home', {
       url: "/home",
+      controller: HomeTabCtrl,
       views: {
         'home-tab': {
           templateUrl: "templates/home.html",
@@ -84,14 +89,14 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
      
     //Patients overview state
     .state('tabs.patients', {
-      url: "/patients",
+      url: "/patients/:edit",
       controller: PatientsCtrl,
       views: {
         'home-tab': {
           templateUrl: "templates/patients.html"
         }
       }
-    })   
+    })
     
     //Patient activity time state 
     .state('tabs.patTime', {
@@ -114,6 +119,16 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
       }
     })
     
+    .state('tabs.editoverview', {
+      url: "/editoverview/:fid",
+      controller: EditOverviewCtrl,
+      views: {
+        'home-tab': {
+          templateUrl: "templates/editoverview.html"
+        }
+      }
+    })
+    
     .state('tabs.about', {
       url: "/about",
       views: {
@@ -123,11 +138,11 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
       }
     })
     
-    .state('tabs.contact', {
-      url: "/contact",
+    .state('tabs.config', {
+      url: "/config",
       views: {
-        'contact-tab': {
-          templateUrl: "templates/contact.html"
+        'config-tab': {
+          templateUrl: "templates/config.html"
         }
       }
     });
@@ -135,11 +150,3 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
    $urlRouterProvider.otherwise("/tab/home");
 
 });
-
-
-ActivityRecoridngApp
-    .factory('corovaService', function() {
-        document.addEventListener("deviceready", function() {
-            console.log('** cordova ready **');
-        }, false);
-    })
