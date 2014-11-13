@@ -53,9 +53,9 @@ function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, Config
     //Transition to PatientTimeCtrl start or to EditOverviewCntrl    
     $scope.goTo = function (fid) {
         if($stateParams.edit == 0){
-            PatientService.updatePatient(fid);
             TimeService.start(fid);
-            $state.go('tabs.patTime', {fid: fid}); 
+            PatientService.curPatient.$promise.then($state.go('tabs.patTime', {fid: fid}));
+            
         }else{
              $state.go('tabs.editoverview', {fid: fid}); 
         }
