@@ -75,7 +75,7 @@
         <div class="row">
           <div class="col col-50">
           <label class="item item-input item-select icon ion-ios7-timer-outline">
-             <div class="input-label">.</div>
+             <div class="input-label">&nbsp</div>
              <select ng-model="patientFilter" 
                 ng-options="patType.name for patType in patTypes"
                 ng-change="updatePatientList(supplierFilter.value, patientFilter.value)">
@@ -84,7 +84,7 @@
           </div>
           <div class="col col-50">
           <label class="item item-input item-select icon ion-ios7-people-outline">
-          <div class="input-label">.</div>
+          <div class="input-label">&nbsp</div>
              <select ng-model="supplierFilter" 
                 ng-options="suppliedCase.name for suppliedCase in suppliedCases"
                 ng-change="updatePatientList(supplierFilter.value, patientFilter.value)">
@@ -118,10 +118,12 @@
         <p>Timer: {{timeService.seconds}}</p>
         </div>
         </div>
-        <br><br>
+        <br>
         <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-disabled="timeService.running" ng-click="startTimer()">Zeiterfassung starten</a>
         <br>
-        <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!timeService.running" ng-click="stoppTimer()">Zeiterfassung stoppen</a>
+        <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!timeService.running" ng-click="stopTimer()">Zeiterfassung stoppen</a>
+        <br>
+        <a class="button button-block icon-left ion-ios7-close-outline" ng-disabled="!timeService.running" ng-click="cancelTimer()">Zeiterfassung abbrechen</a>
         <br>
         <a class="button button-block icon-left ion-compose" ng-click="goToCatalogue()">Leistungen zuweisen</a>
         </ion-content>

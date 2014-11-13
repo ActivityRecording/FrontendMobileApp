@@ -90,11 +90,17 @@ function PatientTimeCtrl($scope, $state, $stateParams, TimeService, PatientServi
      * Es wird TimePeriode.endTime mit dem aktuellen Timestamp gesetzt und per
      * Post-Request die TimePeriode an das Backend übermittelt
      */
-    $scope.stoppTimer = function() {
+    $scope.stopTimer = function() {
         if (TimeService.running) {
             TimeService.stop();
         }
     };   
+    
+    $scope.cancelTimer = function() {
+        if (TimeService.running) {
+            TimeService.cancel();
+        }
+    };
     
     $scope.goToCatalogue = function(){
         $state.go('tabs.catalogue', {fid: $stateParams.fid});

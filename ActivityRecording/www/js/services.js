@@ -48,20 +48,17 @@ services.factory('Activity2', function($resource, ConfigService ) {
 
 services.factory('TimeService', function($filter, $interval, PatientService, TimePeriode, ConfigService) {
         
+        // Service Schnittstelle
         var service = {};
         service.seconds = 0;
         service.fid = null;
         service.running = false;
         
+        // Lokale Daten
         var self = this;
         self.timer = null;
         self.startTime = null;
         self.stopTime = null;
-        
-        self.newPeriode = new TimePeriode({
-                'timePeriodId': null, 
-                'type': 'TREATMENT',
-                'employeeId': ConfigService.empNr});
         
         self.startTimer = function() {
             service.seconds = 0;
@@ -70,11 +67,16 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
             }, 1000);
         };
   
+        /*
+         * Uebemittelt den gemessenen Zeitraum mit einem REST-Call
+         */
         self.submitTimePeriode = function(){
+            self.newPeriode = new TimePeriode({'timePeriodId': null, 'type': 'TREATMENT', 'employeeId': ConfigService.empNr});
             self.newPeriode.treatmentNumber = service.fid;
             self.newPeriode.startTime = self.startTime;
             self.newPeriode.endTime = self.stopTime;
             self.newPeriode.$save();
+            self.newPeriode = undefined;
         };
         
         service.start = function(newFid){
@@ -92,6 +94,10 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
             self.startTimer();
         };
         
+        /*
+         * Beendet eine laufende Zeitmessung und uebermittelt die gemessene Zeit
+         * ueber die REST-Schnittstelle.
+         */
         service.stop = function(){
             self.stopTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
             self.submitTimePeriode();
@@ -103,6 +109,20 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
             self.timer = null;
             service.seconds = 0;
         };
+        
+        /*
+         * Bricht die laufende Zeitmessung ab.
+         */
+        service.cancel = function(){
+            $interval.cancel(self.timer);
+            self.timer = null;
+            self.startTime = null;
+            self.stopTime = null;
+            service.running = false;
+            service.fid = null;
+            service.seconds = 0;
+        };
+        
         return service;
     });
     
