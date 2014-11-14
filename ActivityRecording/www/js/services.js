@@ -1,46 +1,68 @@
 /* 
- * MLE Service Controller - Implements the resourceFactory
+ * MLE Services
  */
-
-
 var services = angular.module('services', ['ngResource', 'config']);
 
-//Get Patient-TreatmentCases with Queryparameter State
-services.factory('Patients', function($resource, ConfigService, stateStr) {
-    return $resource(ConfigService.url+'patients'+stateStr+':stateParam',{stateParam: '@stateParam'}, {
+/*
+ * Der REST-Service Patients gibt alle Behandlungsfaelle  * fuer Status 0, 1 oder 2 
+ * zurueck. Der Status dient der Filterung der Behandlungsfaelle.
+ * Status 0 = Alle, 1 = Patienten ohne Leistungen, 2 = Patienten mit Leistungen
+ */
+services.factory('Patients', function($resource, ConfigService) {
+    return $resource(ConfigService.url + 'patients', {state: '@state'}, {
     });
 });
 
-//Get Patient-TreatmentCases per Supplier and Queryparameter State
-services.factory('MyPatients', function($resource, ConfigService, stateStr) {
-    return $resource(ConfigService.url+'patients/supplier/:supplierParam'+stateStr+':stateParam',
-                      {supplierParam: '@supplier', stateParam: '@stateParam'}, {
+/*
+ * Der REST-Service MyPatients gibt alle Behandlungsfaelle fuer einen
+ * Leistungserbringer fuer Status 0, 1 oder 2 zurueck.
+ * Der Status dient der Filterung der Behandlungsfaelle.
+ * Status 0 = Alle, 1 = Patienten ohne Leistungen, 2 = Patienten mit Leistungen
+ */
+services.factory('MyPatients', function($resource, ConfigService) {
+    return $resource(ConfigService.url + 'patients/supplier/:supplier', {supplier: '@supplier', state: '@state'}, {
     });
 });
 
-//Get Patient-TreatmentCase by TeatmentNumber
+/*
+ * Der Rest-Service Patient gibt einen Behandlungsfall mit der Fallnummer fid zurueck
+ */
 services.factory('Patient', function($resource, ConfigService ) {
-    return $resource(ConfigService.url+'patients/treatment/:fid',{fid: '@fid'}, {
+    return $resource(ConfigService.url + 'patients/treatment/:fid', {fid: '@fid'}, {
     });
 });
 
-//Time Periode Ressource for sending the measuerments to the backend
+/*
+ * Der Rest-Service TimePeriode gibt alle Zeitraeme zurueck
+ */
 services.factory('TimePeriode', function($resource, ConfigService ) {
-    return $resource(ConfigService.getUrl()+'timePeriods', {
+    return $resource(ConfigService.url + 'timePeriods', {
     });
 });
 
-//Get StandardActivites by EmployeeNumber
-services.factory('StandardCatalogue', function($resource, ConfigService, employeeNr ) {
-    return $resource(ConfigService.url+'standardActivities/supplier/'+employeeNr, {
+/*
+ * Der Rest-Service StandardCatalogue gibt die Leistungen des Standardkatalogs
+ * fuer den Mitarbeiter empNr mit der Anzahl bereits erfassten Leistungen zu einem
+ * Behandlungsfall fid zurueck.
+ */
+services.factory('StandardCatalogue', function($resource, ConfigService) {
+    return $resource(ConfigService.url + 'standardActivities/supplier/:empNr/:fid', {empNr: '@empNr', fid: '@fid'}, {
     });
 });
 
+/*
+ * Der Rest-Service Activity gibt die erfasste Leistung mit id zurueck.
+ */
 services.factory('Activity', function($resource, ConfigService ) {
-    return $resource(ConfigService.url+'activities/:fid',{fid: '@fid'}, {
+    return $resource(ConfigService.url + 'activities/:fid', {fid: '@fid'}, {
     });
 });
 
+/*
+ * Der TimeService dient der Messung eines Zeitraumes, waehrend dem ein Leistungserbringer 
+ * eine Leistung fuer einen Patienten erbringt. Es wird im Hintergrund ein Timer
+ * gestartet und die abgelaufene Zeit wird in der Variable seconds propagiert.
+ */
 services.factory('TimeService', function($filter, $interval, PatientService, TimePeriode, ConfigService) {
         
         // Service Schnittstelle
@@ -121,7 +143,12 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
         return service;
     });
     
-    
+
+/*
+ * Der PatientService stellt den aktuell ausgewaehlten Patienten, resp. 
+ * Behandlungsfall zur Verfuegung. Alle erfassten Zeitmessungen und Leistungen
+ * beziehen sich auf den aktuell ausgewaehlten Patienen/Behandlungsfall.
+ */
 services.factory('PatientService', function(Patient){
     var service = {};
     service.curPatient = null;
@@ -138,26 +165,13 @@ services.factory('PatientService', function(Patient){
     return service;
 });
 
-    
-services.factory('ConfigService', function(employeeNr, url){
+/*
+ * Der ConfigService stellt allgemeine Konfigurationsparameter zur Verfuegung.
+ */
+services.factory('ConfigService', function(){
     var service = {};
-    service.url = url;
-    service.empNr = employeeNr;
+    service.url = 'http://localhost:8080/MLEBackend/webresources/';
+    service.empNr = 10101;
     
-    service.getUrl = function (){ 
-        return service.url;
-    };
-    
-    service.setUrl = function (url){
-        service.url = url;
-    };
-    
-    service.getEmployeeNr = function (){
-        return service.empNr;
-    };
-    
-    service.setEmployeeNr = function (empNr){
-        service.empNr = empNr;
-    };
     return service;
 });

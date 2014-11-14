@@ -33,20 +33,17 @@ function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, Config
         {name: 'Alle', value: 0}];
     $scope.supplierFilter = $scope.suppliedCases[0];
 
-    new Patients();
-    new MyPatients();
-
     //Initial List Ressource call
-    $scope.patients = MyPatients.query({supplierParam: $scope.supplierFilter.value,
-        stateParam: $scope.patientFilter.value});
+    $scope.patients = MyPatients.query({supplier: $scope.supplierFilter.value,
+        state: $scope.patientFilter.value});
 
     //Retrieve changed ressources
     $scope.updatePatientList = function (val, state) {
         if ($scope.empNr === val) {
-            $scope.patients = MyPatients.query({supplierParam: val, stateParam: state});
+            $scope.patients = MyPatients.query({supplier: val, state: state});
         }
         else {
-            $scope.patients = Patients.query({stateParam: state});
+            $scope.patients = Patients.query({state: state});
         }
     };
 
@@ -113,10 +110,9 @@ function PatientTimeCtrl($scope, $state, $stateParams, TimeService, PatientServi
  * Catalogcontroller: Verwaltet die Tarmed StandardKatalog Leistungen und 
  * übermittelt ausgewählte Leistungen des Benutzers an das Backend
  */
-function CatalogueCtrl($scope, $stateParams, $ionicListDelegate, StandardCatalogue, Activity, employeeNr) {
+function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, PatientService, ConfigService) {
 
-    new StandardCatalogue();
-    $scope.catItems = StandardCatalogue.query();
+    $scope.catItems = StandardCatalogue.query({empNr: ConfigService.empNr, fid: PatientService.curPatient.treatmentNumber});
     $scope.baseItems = [];
     $scope.specialItems = [];
     $scope.otherItems = [];
@@ -143,8 +139,8 @@ function CatalogueCtrl($scope, $stateParams, $ionicListDelegate, StandardCatalog
 
     $scope.submitData = function(amount, tarmedId) {
       var container = new Activity();
-      container.employeeId = employeeNr;
-      container.treatmentNumber = $stateParams.fid;
+      container.employeeId = ConfigService.empNr;
+      container.treatmentNumber = PatientService.curPatient.treatmentNumber;
       container.activities = [{tarmedActivityId: tarmedId, number: amount}];
       container.$save();
       $scope.sent = true;
@@ -202,14 +198,6 @@ function HomeTabCtrl($scope, $state) {
 };
 
 
-
 function ConfigCtrl($scope, ConfigService) {
-    $scope.config = ConfigService;
-    $scope.showDeleteButton = true;
-    
-    //nur benötigt, wenn wir die Implementation via ein UI-Button machen wollen
-    $scope.updateConfig = function(){
-        ConfigService.setUrl($scope.config.url);
-        ConfigService.setEmployeeNr($scope.config.empNr);
-    };
+    $scope.config = ConfigService;   
 };
