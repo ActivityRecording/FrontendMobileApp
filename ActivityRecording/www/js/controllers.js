@@ -184,7 +184,16 @@ function CatalogueCtrl($scope, $stateParams, $ionicListDelegate, StandardCatalog
 function EditOverviewCtrl($scope, $stateParams, Activity){
     $scope.fid = $stateParams.fid;
     new Activity();
-    $scope.activites = Activity.query();
+    $scope.activityItems = Activity.query({fid: $scope.fid});
+    
+    
+    $scope.deleteItem = function(item){
+      var index = $scope.activityItems.indexOf(item);
+        if (index != -1) {
+        $scope.activityItems.splice(index, 1);
+        
+    }
+    };
 };
 
 
@@ -196,6 +205,7 @@ function HomeTabCtrl($scope, $state) {
 
 function ConfigCtrl($scope, ConfigService) {
     $scope.config = ConfigService;
+    $scope.showDeleteButton = true;
     
     //nur benötigt, wenn wir die Implementation via ein UI-Button machen wollen
     $scope.updateConfig = function(){

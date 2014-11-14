@@ -204,9 +204,11 @@
         <H3>Gemessene Zeit:         Verbuchte Zeit:</H3>
         <br><br>
         <div class="item item-divider"><h2>Zugeweisene Leistungen</h2></div>
-            <ion-list>
-                <ion-item ng-reapeat="item in activites">
-                    <p>{{item.id}}  Tarmed: {{item.tarmedActivity.id}}</p>
+            <ion-list show-delete="showDeleteButton">
+                <ion-item ng-repeat="activityItem in activityItems" class="item item-button-right">
+                    {{activityItem.tarmedActivityId}}  Anz {{activityItem.number}}
+                        <button class="button button-clear button-assertive button-icon icon ion-minus-circled" 
+                                ng-click="activityItems.splice($index, 1)"></button>    
                 </ion-item>
             </ion-list>
         

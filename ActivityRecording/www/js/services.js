@@ -37,7 +37,7 @@ services.factory('StandardCatalogue', function($resource, ConfigService, employe
 });
 
 services.factory('Activity', function($resource, ConfigService ) {
-    return $resource(ConfigService.url+'activities',{}, {
+    return $resource(ConfigService.url+'activities/:fid',{fid: '@fid'}, {
     });
 });
 
