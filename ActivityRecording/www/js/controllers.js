@@ -181,10 +181,10 @@ function CatalogueCtrl($scope, $stateParams, $ionicListDelegate, StandardCatalog
 ;
 
 
-function EditOverviewCtrl($scope, $stateParams, Activity2){
+function EditOverviewCtrl($scope, $stateParams, Activity){
     $scope.fid = $stateParams.fid;
-    new Activity2();
-    $scope.activites = Activity2.query();
+    new Activity();
+    $scope.activites = Activity.query();
 };
 
 

@@ -37,11 +37,6 @@ services.factory('StandardCatalogue', function($resource, ConfigService, employe
 });
 
 services.factory('Activity', function($resource, ConfigService ) {
-    return $resource(ConfigService.url+'activities/container',{}, {
-    });
-});
-
-services.factory('Activity2', function($resource, ConfigService ) {
     return $resource(ConfigService.url+'activities',{}, {
     });
 });
