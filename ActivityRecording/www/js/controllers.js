@@ -199,5 +199,5 @@ function HomeTabCtrl($scope, $state) {
 
 
 function ConfigCtrl($scope, ConfigService) {
-    $scope.config = ConfigService;   
+    $scope.config = ConfigService; 
 };

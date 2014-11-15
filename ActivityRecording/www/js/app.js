@@ -15,13 +15,13 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
  * it will be called, as soon as the hole platfrom is ready by the device
  * Daher wird das NFC-Plugin via NDEF-Listener hier instanziert
  */
-.run(function($ionicPlatform, $state, TimeService) {
+.run(function($ionicPlatform, $state) {
   $ionicPlatform.ready(function() {
       console.log('ionicPlattform ready');
       
  // Read NDEF formatted NFC Tags
     nfc.addNdefListener (
-        function (nfcEvent) {
+        function (nfcEvent, TimeService) {
             var tag = nfcEvent.tag,
                 ndefMessage = tag.ndefMessage;
 

@@ -9,7 +9,7 @@ var services = angular.module('services', ['ngResource', 'config']);
  * Status 0 = Alle, 1 = Patienten ohne Leistungen, 2 = Patienten mit Leistungen
  */
 services.factory('Patients', function($resource, ConfigService) {
-    return $resource(ConfigService.url + 'patients', {state: '@state'}, {
+    return $resource(ConfigService.url() + 'patients', {state: '@state'}, {
     });
 });
 
@@ -20,7 +20,7 @@ services.factory('Patients', function($resource, ConfigService) {
  * Status 0 = Alle, 1 = Patienten ohne Leistungen, 2 = Patienten mit Leistungen
  */
 services.factory('MyPatients', function($resource, ConfigService) {
-    return $resource(ConfigService.url + 'patients/supplier/:supplier', {supplier: '@supplier', state: '@state'}, {
+    return $resource(ConfigService.url() + 'patients/supplier/:supplier', {supplier: '@supplier', state: '@state'}, {
     });
 });
 
@@ -28,7 +28,7 @@ services.factory('MyPatients', function($resource, ConfigService) {
  * Der Rest-Service Patient gibt einen Behandlungsfall mit der Fallnummer fid zurueck
  */
 services.factory('Patient', function($resource, ConfigService ) {
-    return $resource(ConfigService.url + 'patients/treatment/:fid', {fid: '@fid'}, {
+    return $resource(ConfigService.url() + 'patients/treatment/:fid', {fid: '@fid'}, {
     });
 });
 
@@ -36,7 +36,7 @@ services.factory('Patient', function($resource, ConfigService ) {
  * Der Rest-Service TimePeriode gibt alle Zeitraeme zurueck
  */
 services.factory('TimePeriode', function($resource, ConfigService ) {
-    return $resource(ConfigService.url + 'timePeriods', {
+    return $resource(ConfigService.url() + 'timePeriods', {
     });
 });
 
@@ -46,7 +46,7 @@ services.factory('TimePeriode', function($resource, ConfigService ) {
  * Behandlungsfall fid zurueck.
  */
 services.factory('StandardCatalogue', function($resource, ConfigService) {
-    return $resource(ConfigService.url + 'standardActivities/supplier/:empNr/:fid', {empNr: '@empNr', fid: '@fid'}, {
+    return $resource(ConfigService.url() + 'standardActivities/supplier/:empNr/:fid', {empNr: '@empNr', fid: '@fid'}, {
     });
 });
 
@@ -54,7 +54,7 @@ services.factory('StandardCatalogue', function($resource, ConfigService) {
  * Der Rest-Service Activity gibt die erfasste Leistung mit id zurueck.
  */
 services.factory('Activity', function($resource, ConfigService ) {
-    return $resource(ConfigService.url + 'activities/:fid', {fid: '@fid'}, {
+    return $resource(ConfigService.url() + 'activities/:fid', {fid: '@fid'}, {
     });
 });
 
@@ -170,8 +170,11 @@ services.factory('PatientService', function(Patient){
  */
 services.factory('ConfigService', function(){
     var service = {};
-    service.url = 'http://localhost:8080/MLEBackend/webresources/';
     service.empNr = 10101;
+    service.ip = '10.0.0.11';
+    service.url = function(){
+        return 'http\\://' + service.ip + '\\:8080/MLEBackend/webresources/';
+    };
     
     return service;
 });
