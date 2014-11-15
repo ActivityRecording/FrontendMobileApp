@@ -201,20 +201,46 @@
     <script id="templates/editoverview.html" type="text/ng-template">
         <ion-view title="Leistungen bearbeiten" ng-controller="EditOverviewCtrl">
         <ion-content>
-        <H3>Gemessene Zeit:         Verbuchte Zeit:</H3>
+        <H3>Gemessene Zeit: {{fid}}       Verbuchte Zeit:</H3>
         <br><br>
         <div class="item item-divider"><h2>Zugeweisene Leistungen</h2></div>
             <ion-list show-delete="showDeleteButton">
                 <ion-item ng-repeat="activityItem in activityItems" class="item item-button-right">
-                    {{activityItem.tarmedActivityId}}  Anz {{activityItem.number}}
+                      {{activityItem.tarmedActivityId}} {{activityItem.description}} {{activityItem.number}} {{activityItem.duration}}'  
                         <button class="button button-clear button-assertive button-icon icon ion-minus-circled" 
-                                ng-click="activityItems.splice($index, 1)"></button>    
+                                ng-click="deleteItem(activityItem)"></button>    
                 </ion-item>
             </ion-list>
-        
+            <br>
+            <a class="button button-block icon-left ion-plus-circled" ng-click="goToCatalogue()">Leistungen hinzufügen</a>
+            <br>
+            <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-click="goToEditTime()">Zeiträume bearbeiten</a>
+
         </ion-content>
         </ion-view>
     </script>
+    
+    
+        <script id="templates/edittime.html" type="text/ng-template">
+        <ion-view title="Zeiträume bearbeiten" ng-controller="EditTimeCtrl">
+        <ion-content>
+        <H3>Behandlungszeit: {{fid}} Verrechnent:</H3>
+        <H3>Pflegezeit:              Verrechnent:</H3>
+        <br><br>
+        <div class="item item-divider"><h2>Behandlungszeiträume</h2></div>
+            <ion-list>
+                <ion-item ng-repeat="durationItem in durationItems" class="item item-button-right">
+                     {{durationItem.startTime}}  {{durationItem.endTime}}  {{durationItem.type}}'  
+                        <button class="button button-clear button-assertive button-icon icon ion-minus-circled" ng-click="deleteItem(durationItem)"></button>    
+                </ion-item>
+            </ion-list>
+            <br>
+            <a class="button button-assertive button-clear icon ion-plus-circled" ng-click="addDuration()"></a>
+   
+        </ion-content>
+        </ion-view>
+    </script>
+    
     
         
     <script id="templates/editdetail.html" type="text/ng-template">

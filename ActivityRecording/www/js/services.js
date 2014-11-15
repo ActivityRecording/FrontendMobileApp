@@ -36,7 +36,7 @@ services.factory('Patient', function($resource, ConfigService ) {
  * Der Rest-Service TimePeriode gibt alle Zeitraeme zurueck
  */
 services.factory('TimePeriode', function($resource, ConfigService ) {
-    return $resource(ConfigService.url() + 'timePeriods', {
+    return $resource(ConfigService.url() + 'timePeriods/treatment/:fid', {fid: '@fid'}, {
     });
 });
 
@@ -171,7 +171,7 @@ services.factory('PatientService', function(Patient){
 services.factory('ConfigService', function(){
     var service = {};
     service.empNr = 10101;
-    service.ip = '10.0.0.11';
+    service.ip = '192.168.0.10';
     service.url = function(){
         return 'http\\://' + service.ip + '\\:8080/MLEBackend/webresources/';
     };

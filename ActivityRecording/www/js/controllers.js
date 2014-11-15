@@ -113,9 +113,6 @@ function PatientTimeCtrl($scope, $state, $stateParams, TimeService, PatientServi
 function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, PatientService, ConfigService) {
 
     $scope.catItems = StandardCatalogue.query({empNr: ConfigService.empNr, fid: PatientService.curPatient.treatmentNumber});
-    $scope.baseItems = [];
-    $scope.specialItems = [];
-    $scope.otherItems = [];
     $scope.listCanSwipe = true;
     $scope.cnt = 1;
     $scope.sent = false;
@@ -171,26 +168,53 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
                $scope.visibleSpecial = false;
                $scope.visibleOthers = true;  
             }else $scope.visibleOthers = false;
-        }
+        } 
     };
 }
 ;
 
 
-function EditOverviewCtrl($scope, $stateParams, Activity){
+function EditOverviewCtrl($scope, $state, $stateParams, Activity){
     $scope.fid = $stateParams.fid;
     new Activity();
     $scope.activityItems = Activity.query({fid: $scope.fid});
     
     
     $scope.deleteItem = function(item){
-      var index = $scope.activityItems.indexOf(item);
-        if (index != -1) {
-        $scope.activityItems.splice(index, 1);
-        
-    }
+        var index = $scope.activityItems.indexOf(item);
+        if (index !== -1) {
+            $scope.activityItems.splice(index, 1);
+            Activity.delete({fid: item.activityId});
+        }    
+    };
+    
+    $scope.goToCatalogue = function(){
+        $state.go('tabs.catalogue');
+    };
+    
+    $scope.goToEditTime = function(){
+        $state.go('tabs.edittime', {fid: $scope.fid});
     };
 };
+
+function EditTimeCtrl($scope, $stateParams, TimePeriode, PatientService){
+    $scope.fid = $stateParams.fid;//PatientService.curPatient.treatmentNumber;
+    new TimePeriode();
+    $scope.durationItems = TimePeriode.query({fid: $scope.fid});
+    
+    $scope.addDuration = function(){
+        //TODO
+    };
+    
+     $scope.deleteItem = function(item){
+        var index = $scope.durationItems.indexOf(item);
+        if (index !== -1) {
+            $scope.durationItems.splice(index, 1);
+            //TODO: TimePeriode.delete({fid: item.activityId});
+        }    
+    };
+};
+
 
 
 function HomeTabCtrl($scope, $state) {

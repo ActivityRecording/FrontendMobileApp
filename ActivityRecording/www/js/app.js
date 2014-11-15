@@ -67,7 +67,7 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+.config(function($stateProvider, $urlRouterProvider) {
     
   //Ionic view tab states  
   $stateProvider
@@ -125,6 +125,16 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
       views: {
         'home-tab': {
           templateUrl: "templates/editoverview.html"
+        }
+      }
+    })
+    
+    .state('tabs.edittime', {
+      url: "/edittime/:fid",
+      controller: EditTimeCtrl,
+      views: {
+        'home-tab': {
+          templateUrl: "templates/edittime.html"
         }
       }
     })
