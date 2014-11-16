@@ -51,10 +51,9 @@ function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, Config
     $scope.goTo = function (fid) {
         if($stateParams.edit == 0){
             TimeService.start(fid);
-            PatientService.curPatient.$promise.then($state.go('tabs.patTime', {fid: fid}));
-            
+            PatientService.curPatient.$promise.then($state.go('tabs.patTime'));
         }else{
-             $state.go('tabs.editoverview', {fid: fid}); 
+            $state.go('tabs.editoverview', {fid: fid}); 
         }
     };
 }
@@ -65,12 +64,11 @@ function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, Config
  * Controller für das Messen der Zeitstempeln der Leistungserfassung {start/stopp Timer}
  * In $stateParams wird der Parameter FId aus dem PatientsCntrl injected
  */
-function PatientTimeCtrl($scope, $state, $stateParams, TimeService, PatientService) {
+function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
 
     //Lokale ControllerVariabeln
     $scope.timeService = TimeService;
     $scope.patientService = PatientService;
-    $scope.fid = $stateParams.fid;
  
     /*
      * Beim Betätigen des "Zeitmessung starten" Buttons wird diese Funktion aufgerufen
@@ -78,7 +76,7 @@ function PatientTimeCtrl($scope, $state, $stateParams, TimeService, PatientServi
      */
     $scope.startTimer = function() {
         if (!TimeService.running) {
-            TimeService.start($scope.fid);
+            TimeService.start(PatientService.curPatient.treatmentNumber);
         }
     };
 
@@ -100,7 +98,7 @@ function PatientTimeCtrl($scope, $state, $stateParams, TimeService, PatientServi
     };
     
     $scope.goToCatalogue = function(){
-        $state.go('tabs.catalogue', {fid: $stateParams.fid});
+        $state.go('tabs.catalogue');
     };
     
 }
@@ -178,7 +176,6 @@ function EditOverviewCtrl($scope, $state, $stateParams, Activity){
     $scope.fid = $stateParams.fid;
     new Activity();
     $scope.activityItems = Activity.query({fid: $scope.fid});
-    
     
     $scope.deleteItem = function(item){
         var index = $scope.activityItems.indexOf(item);

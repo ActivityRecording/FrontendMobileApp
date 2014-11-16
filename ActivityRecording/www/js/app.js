@@ -36,13 +36,13 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             //NFC-Scan im Home Bildschrim
             if($state.includes('tabs.home')){
                 TimeService.start(fid);
-                $state.go('tabs.patTime',{fid: fid});   
+                $state.go('tabs.patTime');   
             };
             
             //NFC-Scann aus der Patientenübersicht
             if($state.includes('tabs.patients')){
                 TimeService.start(fid); 
-                $state.go('tabs.patTime',{fid: fid});   
+                $state.go('tabs.patTime');   
             }
             //NFC-Scann aus der Zeit und Leistungserassungsübersicht
             if($state.includes('tabs.patTime')){   
@@ -51,7 +51,7 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'con
             //NFC-Scann aus der Leistungskatalog
             if($state.includes('tabs.catalogue')){
                 TimeService.start(fid); 
-                $state.go('tabs.patTime',{fid: fid});   
+                $state.go('tabs.patTime');   
             }
             
         }, 

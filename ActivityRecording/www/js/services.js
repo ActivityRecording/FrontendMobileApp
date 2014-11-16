@@ -168,10 +168,11 @@ services.factory('PatientService', function(Patient){
 /*
  * Der ConfigService stellt allgemeine Konfigurationsparameter zur Verfuegung.
  */
-services.factory('ConfigService', function(){
+services.factory('ConfigService', function(employeeNr, ip){
     var service = {};
-    service.empNr = 10101;
-    service.ip = '192.168.0.10';
+    service.empNr = employeeNr;
+    service.ip = ip;
+    
     service.url = function(){
         return 'http\\://' + service.ip + '\\:8080/MLEBackend/webresources/';
     };
