@@ -149,14 +149,15 @@
    <!-- Grundleistungen-->
     <div class="item item-divider" ng-click="toggleCatLists(0)"><h2>Grundleistungen</h2></div>
      <ion-list can-swipe="listCanSwipe" ng-show="visibleBase">
-        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1">
+        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1"  on-swipe-left="reset()">
           <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+          <span class="badge badge-assertive">{{catItem.capturedCount}}</span>
              <div ng-if="!catItem.notSelectable" ng-class="{'running' : sent}">
                 <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
                 <ion-option-button class="button-light ion-plus-round"
                             ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
                 <ion-option-button class="button-balanced ion-checkmark-round"
-                            ng-click="submitData(cnt, catItem.tarmedId)">
+                            ng-click="submitData(cnt, catItem)">
                 </ion-option-button>
              </div>
         </ion-item>
@@ -172,7 +173,7 @@
                 <ion-option-button class="button-light ion-plus-round"
                          ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
                 <ion-option-button class="button-balanced ion-checkmark-round"
-                        ng-click="submitData(cnt, catItem.tarmedId)">
+                        ng-click="submitData(cnt, catItem)">
                 </ion-option-button>
             </div>    
         </ion-item>
@@ -188,7 +189,7 @@
                  <ion-option-button class="button-light ion-plus-round"
                            ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
                  <ion-option-button class="button-balanced ion-checkmark-round"
-                           ng-click="submitData(cnt, catItem.tarmedId)">
+                           ng-click="submitData(cnt, catItem)">
                  </ion-option-button>
             </div>
         </ion-item>

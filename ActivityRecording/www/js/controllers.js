@@ -128,18 +128,26 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
      *  wie es die Katalog-Kardinalität zulässt
      */
     $scope.setCnt = function (item) {
-        if (item.cardinality <= $scope.cnt)$scope.cnt = item.cardinality;
-        else $scope.cnt++;
+        if (item.cardinality <= ($scope.cnt + item.capturedCount))
+            $scope.cnt = item.cardinality - item.capturedCount;
+        else 
+            $scope.cnt++;
+    };
+    
+    $scope.reset = function(){
+        $scope.cnt = 1;
     };
 
-    $scope.submitData = function(amount, tarmedId) {
+    $scope.submitData = function(amount, item) {
       var container = new Activity();
       container.employeeId = ConfigService.empNr;
       container.treatmentNumber = PatientService.curPatient.treatmentNumber;
-      container.activities = [{tarmedActivityId: tarmedId, number: amount}];
+      container.activities = [{tarmedActivityId: item.tarmedId, number: amount}];
       container.$save();
       $scope.sent = true;
+      item.capturedCount = item.capturedCount + amount;
       $ionicListDelegate.closeOptionButtons();
+      $scope.cnt = 1;
     };
 
     $scope.toggleCatLists = function (type) {

@@ -8,7 +8,7 @@
  *          walls1@students.bfh.ch
  */
 
-var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'controllers', 'services', 'config'])
+var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'directives', 'controllers', 'services', 'config'])
 
 /*
  * ionic wrapper to cordova's onDeviceRedy function
