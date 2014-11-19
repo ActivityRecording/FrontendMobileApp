@@ -10,8 +10,8 @@ function MenuController($scope, $route, $routeParams, $location) {
     $scope.$route = $route;
     $scope.$location = $location;
     $scope.$routeParams = $routeParams;
-}
-;
+};
+
 /*
  * Patients Controller returns all treatmentCases, their states and it's patient
  * Filter of Treatment-Types is realized with query State Parameters
@@ -19,7 +19,6 @@ function MenuController($scope, $route, $routeParams, $location) {
 function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, ConfigService, TimeService, PatientService) {
 
     $scope.empNr = ConfigService.empNr;
-    $scope.edit = $stateParams.edit;
 
     //Select Option Model
     $scope.patTypes = [
@@ -53,19 +52,19 @@ function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, Config
             TimeService.start(fid);
             PatientService.curPatient.$promise.then($state.go('tabs.patTime'));
         }else{
+            PatientService.updatePatient(fid);
+//            PatientService.curPatient.$promise.then($state.go('tabs.editoverview', {fid: fid}));
             $state.go('tabs.editoverview', {fid: fid}); 
         }
     };
-}
-;
-
+};
 
 /*
  * Controller für das Messen der Zeitstempeln der Leistungserfassung {start/stopp Timer}
  * In $stateParams wird der Parameter FId aus dem PatientsCntrl injected
  */
 function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
-
+    
     //Lokale ControllerVariabeln
     $scope.timeService = TimeService;
     $scope.patientService = PatientService;
@@ -100,17 +99,17 @@ function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
     $scope.goToCatalogue = function(){
         $state.go('tabs.catalogue');
     };
-    
-}
-;
+};
 
 /*
  * Catalogcontroller: Verwaltet die Tarmed StandardKatalog Leistungen und 
  * übermittelt ausgewählte Leistungen des Benutzers an das Backend
  */
 function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, PatientService, ConfigService) {
+    
+    $scope.fid = PatientService.curPatient.treatmentNumber; 
 
-    $scope.catItems = StandardCatalogue.query({empNr: ConfigService.empNr, fid: PatientService.curPatient.treatmentNumber});
+    $scope.catItems = StandardCatalogue.query({empNr: ConfigService.empNr, fid: $scope.fid});
     $scope.listCanSwipe = true;
     $scope.cnt = 1;
     $scope.sent = false;
@@ -176,12 +175,14 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
             }else $scope.visibleOthers = false;
         } 
     };
-}
-;
+};
 
-
-function EditOverviewCtrl($scope, $state, $stateParams, Activity){
-    $scope.fid = $stateParams.fid;
+function EditOverviewCtrl($scope, $state, $stateParams, Activity, PatientService){
+    
+    //Lokale ControllerVariabeln
+    $scope.patientService = PatientService; 
+    $scope.fid = $stateParams.fid;//$scope.patientService.curPatient.treatmentNumber; //
+    
     new Activity();
     $scope.activityItems = Activity.query({fid: $scope.fid});
     
@@ -202,30 +203,58 @@ function EditOverviewCtrl($scope, $state, $stateParams, Activity){
     };
 };
 
-function EditTimeCtrl($scope, $stateParams, TimePeriode, PatientService){
-    $scope.fid = $stateParams.fid;//PatientService.curPatient.treatmentNumber;
+function EditTimeCtrl($scope,TimePeriode, $filter, PatientService, ConfigService){
+        
+    $scope.fid = PatientService.curPatient.treatmentNumber;
+    $scope.showTimeEdit = false;
+  
     new TimePeriode();
     $scope.durationItems = TimePeriode.query({fid: $scope.fid});
+  
+    //Datum und Zeit für UI per "jetz" initiiert
+    $scope.startDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+    $scope.startTime =  $filter('date')(new Date(), 'HH:mm:ss');
+    $scope.endDate = $scope.startDate;
+    $scope.endTime = $scope.startTime;
     
-    $scope.addDuration = function(){
-        //TODO
+
+    /*
+     * Neuen Zeitraum gemäss Benutzereingabe übermitteln
+     * Direkter Zugriff auf Scope ist über bei Time / Date Input nicht mehr möglich
+     */
+    $scope.addDuration = function(d0, t0, d1, t1){
+        var from = new Date(d0+' '+t0);
+        var to = new Date(d1+' '+t1);
+        
+        //Erstellen des neuen Eintrages per POST
+        var newPeriode = new TimePeriode({'timePeriodId': null, 'type': 'TREATMENT', 'employeeId': ConfigService.empNr});
+           newPeriode.treatmentNumber = $scope.fid;
+           newPeriode.startTime = from;
+           newPeriode.endTime = to;
+           newPeriode.$save();
+        
+        //Ausbelndung und Liste aktualisieren
+        $scope.showTimeEdit = false;   
+        $scope.durationItems = TimePeriode.query({fid: $scope.fid});
+    };
+    
+    $scope.toggleTimeEdit = function(){
+        if($scope.showTimeEdit) $scope.showTimeEdit = false;
+        else $scope.showTimeEdit = true;
     };
     
      $scope.deleteItem = function(item){
         var index = $scope.durationItems.indexOf(item);
         if (index !== -1) {
             $scope.durationItems.splice(index, 1);
-            //TODO: TimePeriode.delete({fid: item.activityId});
+            TimePeriode.delete({fid: item.timePeriodId});
         }    
     };
 };
 
-
-
 function HomeTabCtrl($scope, $state) {
     $scope.goToPatients= function(mode){$state.go('tabs.patients', {edit: mode});};
 };
-
 
 function ConfigCtrl($scope, ConfigService) {
     $scope.config = ConfigService; 

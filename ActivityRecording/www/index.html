@@ -23,7 +23,6 @@
         <!-- cordova start script -->
         <script src="cordova.js"></script>
 
-
     </head>
     <body ng-app="ActivityRecordingApp">
 
@@ -34,19 +33,15 @@
 
     <script id="templates/tabs.html" type="text/ng-template">
         <ion-tabs class="abs-striped tabs-top tabs-background-positive tabs-light">
-
             <ion-tab title="Home Bildschrim" icon="ion-home" href="#/tab/home">
                 <ion-nav-view name="home-tab"></ion-nav-view>
             </ion-tab>
-
             <ion-tab icon="ion-android-information" href="#/tab/about">
                 <ion-nav-view name="about-tab"></ion-nav-view>
             </ion-tab>
-
             <ion-tab icon="ion-android-settings" ui-sref="tabs.config">
                 <ion-nav-view name="config-tab"></ion-nav-view>
             </ion-tab>
-
         </ion-tabs>
     </script>
 
@@ -110,22 +105,22 @@
     <script id="templates/patient.html" type="text/ng-template">
         <ion-view title="Zeiterfassung" ng-controller="PatientTimeCtrl">
         <ion-content class="padding"> 
-        <div ng-class="{'running' : timeService.running, 'stopped' : !timeService.running}">
-        <div class="text-center">
-        <h1>{{patientService.curPatient.lastName}} {{patientService.curPatient.firstName}}</h1>
-        <h3>{{patientService.curPatient.dateOfBirth|date:'dd.MM.yyyy'}}</h3>
-        <p>{{patientService.curPatient.patientNumber}}/{{patientService.curPatient.treatmentNumber}}</p>
-        <p>Timer: {{timeService.seconds}}</p>
-        </div>
-        </div>
-        <br>
-        <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-disabled="timeService.running" ng-click="startTimer()">Zeiterfassung starten</a>
-        <br>
-        <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!timeService.running" ng-click="stopTimer()">Zeiterfassung stoppen</a>
-        <br>
-        <a class="button button-block icon-left ion-ios7-close-outline" ng-disabled="!timeService.running" ng-click="cancelTimer()">Zeiterfassung abbrechen</a>
-        <br>
-        <a class="button button-block icon-left ion-compose" ng-click="goToCatalogue()">Leistungen zuweisen</a>
+            <div ng-class="{'running' : timeService.running, 'stopped' : !timeService.running}">
+                <div class="text-center">
+                    <h1>{{patientService.curPatient.lastName}} {{patientService.curPatient.firstName}}</h1>
+                    <h3>{{patientService.curPatient.dateOfBirth|date:'dd.MM.yyyy'}}</h3>
+                    <p>{{patientService.curPatient.patientNumber}}/{{patientService.curPatient.treatmentNumber}}</p>
+                    <p>Timer: {{timeService.seconds}}</p>
+                </div>
+            </div>
+            <br>
+            <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-disabled="timeService.running" ng-click="startTimer()">Zeiterfassung starten</a>
+            <br>
+            <a class="button button-block icon-left ion-ios7-stopwatch" ng-disabled="!timeService.running" ng-click="stopTimer()">Zeiterfassung stoppen</a>
+            <br>
+            <a class="button button-block icon-left ion-ios7-close-outline" ng-disabled="!timeService.running" ng-click="cancelTimer()">Zeiterfassung abbrechen</a>
+            <br>
+            <a class="button button-block icon-left ion-compose" ng-click="goToCatalogue()">Leistungen zuweisen</a>
         </ion-content>
         </ion-view>
     </script>
@@ -222,22 +217,62 @@
     </script>
     
     
-        <script id="templates/edittime.html" type="text/ng-template">
+    <script id="templates/edittime.html" type="text/ng-template">
         <ion-view title="Zeiträume bearbeiten" ng-controller="EditTimeCtrl">
         <ion-content>
-        <H3>Behandlungszeit: {{fid}} Verrechnet:</H3>
-        <H3>Pflegezeit:              Verrechnet:</H3>
-        <br><br>
-        <div class="item item-divider"><h2>Behandlungszeiträume</h2></div>
-            <ion-list>
-                <ion-item ng-repeat="durationItem in durationItems" class="item item-button-right">
-                     {{durationItem.startTime}}  {{durationItem.endTime}}  {{durationItem.type}}'  
-                        <button class="button button-clear button-assertive button-icon icon ion-minus-circled" ng-click="deleteItem(durationItem)"></button>    
-                </ion-item>
-            </ion-list>
-            <br>
-            <a class="button button-assertive button-clear icon ion-plus-circled" ng-click="addDuration()"></a>
-   
+            <H3>Behandlungszeit: {{fid}} Verrechnet:</H3>
+            <H3>Pflegezeit:       {{startDate}}       Verrechnet: {{startTime}} </H3>
+            <br><br>
+            <div class="item item-divider">
+                <div class="row">
+                    <div class="col col-80 text-left center-content"><h2>Behandlungszeiträume</h2></div>
+                    <div class="col col-20 text-right">
+                        <a class="button button-balanced button-clear icon ion-plus-circled" ng-click="toggleTimeEdit()"></a>
+                    </div>
+                </div> 
+            </div>
+            <div ng-show="!showTimeEdit">
+                <ion-list>
+                    <ion-item ng-repeat="durationItem in durationItems" class="item item-button-right">
+                        {{durationItem.startTime|date:'dd.MM.yyyy : hh:mm'}}  {{durationItem.endTime|date:'- hh:mm'}}  {{durationItem.type}}'  
+                            <button class="button button-clear button-assertive button-icon icon ion-minus-circled" ng-click="deleteItem(durationItem)"></button>    
+                    </ion-item>
+                </ion-list>
+            </div>
+            <div ng-show="showTimeEdit">
+                <div class="row">
+                    <div class="col">
+                        <label class="item item-input">
+                            <span class="input-label">Datum</span>
+                            <input type="date" ng-model="startDate">
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label class="item item-input">
+                            <span class="input-label">Zeit von</span>
+                            <input type="time" ng-model="startTime">
+                        </label>
+                    </div>
+                </div>    
+                <div class="row">
+                    <div class="col">
+                        <label class="item item-input">
+                            <span class="input-label">Datum</span>
+                            <input type="date" ng-model="endDate">
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label class="item item-input">
+                            <span class="input-label">Zeit bis</span>
+                            <input type="time" ng-model="endTime">
+                        </label>
+                    </div>
+                </div>    
+                <div class="button-bar">
+                    <a class="button button-clear button-assertive icon ion-close-circled" ng-click="toggleTimeEdit()">Abbrechen</a>
+                    <a class="button button-clear button-balanced icon ion-checkmark-circled" ng-click="addDuration(startDate, startTime, endDate, endTime)">Hinzufügen</a>
+                </div>
+            </div>          
         </ion-content>
         </ion-view>
     </script>
