@@ -168,7 +168,10 @@ services.factory('PatientService', function(Patient){
 /*
  * Der ConfigService stellt allgemeine Konfigurationsparameter zur Verfuegung.
  */
-services.factory('ConfigService', function(employeeNr, ip){
+services.factory('ConfigService', function(ConfigDB, $window, ip, employeeNr){
+    
+    var self = this;
+    self.urlString;
     var service = {};
     service.empNr = employeeNr;
     service.ip = ip;
@@ -177,5 +180,44 @@ services.factory('ConfigService', function(employeeNr, ip){
         return 'http\\://' + service.ip + '\\:8080/MLEBackend/webresources/';
     };
     
+    service.saveConfig = function(){
+        ConfigDB.addConfig({id: "ip", ip: service.ip}).then(
+            function(){}, 
+            function(err){$window.alert(err);}
+        );
+        ConfigDB.addConfig({id: "empNr", empNr: service.empNr}).then(
+            function(){}, 
+            function(err){$window.alert(err);}
+        );
+    };
+    
+    self.loadConfig = function(){
+        ConfigDB.getConfig("ip").then(
+            function(data){
+                service.ip = data.ip;
+                self.urlString = "http://" + data.ip + ":8080/MLEBackend/webresources/";
+            }, 
+            function(err){
+                $window.alert(err);
+            }
+        );
+        ConfigDB.getConfig("empNr").then(
+            function(data){
+                service.empNr = data.empNr;
+            }, 
+            function(err){
+                $window.alert(err);
+            }
+        );
+    };
+  
+    self.init = function(){
+        ConfigDB.open().then(function(){
+            self.loadConfig();
+        });
+    };
+    
+    //self.init();
+
     return service;
 });

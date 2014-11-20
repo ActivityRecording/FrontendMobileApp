@@ -50,11 +50,10 @@ function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, Config
     $scope.goTo = function (fid) {
         if($stateParams.edit == 0){
             TimeService.start(fid);
-            PatientService.curPatient.$promise.then($state.go('tabs.patTime'));
+            PatientService.curPatient.$promise.then(function(){$state.go('tabs.patTime');});
         }else{
             PatientService.updatePatient(fid);
-//            PatientService.curPatient.$promise.then($state.go('tabs.editoverview', {fid: fid}));
-            $state.go('tabs.editoverview', {fid: fid}); 
+            PatientService.curPatient.$promise.then(function(){$state.go('tabs.editoverview');});
         }
     };
 };
@@ -177,14 +176,12 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
     };
 };
 
-function EditOverviewCtrl($scope, $state, $stateParams, Activity, PatientService){
+function EditOverviewCtrl($scope, $state, Activity, PatientService){
     
     //Lokale ControllerVariabeln
     $scope.patientService = PatientService; 
-    $scope.fid = $stateParams.fid;//$scope.patientService.curPatient.treatmentNumber; //
     
-    new Activity();
-    $scope.activityItems = Activity.query({fid: $scope.fid});
+    $scope.activityItems = Activity.query({fid: PatientService.curPatient.treatmentNumber});
     
     $scope.deleteItem = function(item){
         var index = $scope.activityItems.indexOf(item);
@@ -199,7 +196,7 @@ function EditOverviewCtrl($scope, $state, $stateParams, Activity, PatientService
     };
     
     $scope.goToEditTime = function(){
-        $state.go('tabs.edittime', {fid: $scope.fid});
+        $state.go('tabs.edittime', {fid: PatientService.curPatient.treatmentNumber});
     };
 };
 
@@ -258,4 +255,8 @@ function HomeTabCtrl($scope, $state) {
 
 function ConfigCtrl($scope, ConfigService) {
     $scope.config = ConfigService; 
+    
+    $scope.saveConfig = function(){
+        ConfigService.saveConfig();
+    };
 };

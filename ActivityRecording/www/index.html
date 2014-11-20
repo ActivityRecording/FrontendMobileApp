@@ -19,6 +19,7 @@
         <script src="js/services.js"></script>     
         <script src="js/controllers.js"></script>
         <script src="js/app.js"></script>
+        <script src="js/indexeddb.js"></script>
 
         <!-- cordova start script -->
         <script src="cordova.js"></script>
@@ -308,7 +309,7 @@
             <input type="text" ng-model="config.ip">
         </label>
         </div>
-        <!-- <a class="button button-block button-positve" ng-click"saveConfig">Speichern</a> -->
+        <a class="button button-block button-positve" ng-click="saveConfig()">Speichern</a>
         </ion-content>
         </ion-view>
     </script>

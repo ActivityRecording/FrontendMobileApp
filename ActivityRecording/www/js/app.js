@@ -8,20 +8,20 @@
  *          walls1@students.bfh.ch
  */
 
-var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'directives', 'controllers', 'services', 'config'])
+var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'directives', 'controllers', 'services', 'config', 'indexedDB'])
 
 /*
  * ionic wrapper to cordova's onDeviceRedy function
  * it will be called, as soon as the hole platfrom is ready by the device
  * Daher wird das NFC-Plugin via NDEF-Listener hier instanziert
  */
-.run(function($ionicPlatform, $state) {
+.run(function($ionicPlatform, $state, TimeService) {
   $ionicPlatform.ready(function() {
       console.log('ionicPlattform ready');
       
  // Read NDEF formatted NFC Tags
     nfc.addNdefListener (
-        function (nfcEvent, TimeService) {
+        function (nfcEvent) {
             var tag = nfcEvent.tag,
                 ndefMessage = tag.ndefMessage;
 
