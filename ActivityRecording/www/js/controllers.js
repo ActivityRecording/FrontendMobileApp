@@ -22,9 +22,9 @@ function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, Config
 
     //Select Option Model
     $scope.patTypes = [
-        {name: 'Alle', value: 0},
-        {name: 'Offene', value: 1},
-        {name: 'Erfasst', value: 2}];
+        {name: 'Heute', value: 0},
+        {name: 'Woche', value: 1},
+        {name: 'Alle', value: 2}];
     $scope.patientFilter = $scope.patTypes[0];
 
     $scope.suppliedCases = [
@@ -200,7 +200,7 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService){
     };
 };
 
-function EditTimeCtrl($scope,TimePeriode, $filter, PatientService, ConfigService){
+function EditTimeCtrl($scope,TimePeriode, PatientService, ConfigService){
         
     $scope.fid = PatientService.curPatient.treatmentNumber;
     $scope.showTimeEdit = false;
@@ -209,19 +209,17 @@ function EditTimeCtrl($scope,TimePeriode, $filter, PatientService, ConfigService
     $scope.durationItems = TimePeriode.query({fid: $scope.fid});
   
     //Datum und Zeit für UI per "jetz" initiiert
-    $scope.startDate = $filter('date')(new Date(), 'yyyy-MM-dd');
-    $scope.startTime =  $filter('date')(new Date(), 'HH:mm:ss');
-    $scope.endDate = $scope.startDate;
-    $scope.endTime = $scope.startTime;
-    
+    $scope.startDate = PatientService.curPatient.startTime;
+    $scope.duration = {min: 5}; 
 
     /*
      * Neuen Zeitraum gemäss Benutzereingabe übermitteln
      * Direkter Zugriff auf Scope ist über bei Time / Date Input nicht mehr möglich
      */
-    $scope.addDuration = function(d0, t0, d1, t1){
-        var from = new Date(d0+' '+t0);
-        var to = new Date(d1+' '+t1);
+    $scope.addDuration = function(min){
+        var from =  PatientService.curPatient.startTime;
+        var to = new Date(from);
+        to.setMinutes(to.getMinutes()+ min - 120);
         
         //Erstellen des neuen Eintrages per POST
         var newPeriode = new TimePeriode({'timePeriodId': null, 'type': 'TREATMENT', 'employeeId': ConfigService.empNr});

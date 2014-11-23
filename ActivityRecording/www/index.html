@@ -221,7 +221,7 @@
     <script id="templates/edittime.html" type="text/ng-template">
         <ion-view title="Zeiträume bearbeiten" ng-controller="EditTimeCtrl">
         <ion-content>
-            <H3>Behandlungszeit: {{fid}} Verrechnet:</H3>
+            <H3>Behandlungszeit: {{fid}} Verrechnet: {{duration.min}}</H3>
             <H3>Pflegezeit:       {{startDate}}       Verrechnet: {{startTime}} </H3>
             <br><br>
             <div class="item item-divider">
@@ -241,43 +241,19 @@
                 </ion-list>
             </div>
             <div ng-show="showTimeEdit">
-                <div class="row">
-                    <div class="col">
-                        <label class="item item-input">
-                            <span class="input-label">Datum</span>
-                            <input type="date" ng-model="startDate">
-                        </label>
-                    </div>
-                    <div class="col">
-                        <label class="item item-input">
-                            <span class="input-label">Zeit von</span>
-                            <input type="time" ng-model="startTime">
-                        </label>
-                    </div>
-                </div>    
-                <div class="row">
-                    <div class="col">
-                        <label class="item item-input">
-                            <span class="input-label">Datum</span>
-                            <input type="date" ng-model="endDate">
-                        </label>
-                    </div>
-                    <div class="col">
-                        <label class="item item-input">
-                            <span class="input-label">Zeit bis</span>
-                            <input type="time" ng-model="endTime">
-                        </label>
-                    </div>
-                </div>    
+                <label class="item item-input">Fall-Datum: {{startDate|date:'dd.MM.yyyy'}}</label>  
+                <label class="item item-input">
+                    <span class="input-label">Dauer:</span>
+                     <input type="number" ng-model="duration.min">
+                </label>
                 <div class="button-bar">
                     <a class="button button-clear button-assertive icon ion-close-circled" ng-click="toggleTimeEdit()">Abbrechen</a>
-                    <a class="button button-clear button-balanced icon ion-checkmark-circled" ng-click="addDuration(startDate, startTime, endDate, endTime)">Hinzufügen</a>
+                    <a class="button button-clear button-balanced icon ion-checkmark-circled" ng-click="addDuration(duration.min)">Hinzufügen</a>
                 </div>
             </div>          
         </ion-content>
         </ion-view>
     </script>
-    
     
         
     <script id="templates/editdetail.html" type="text/ng-template">
