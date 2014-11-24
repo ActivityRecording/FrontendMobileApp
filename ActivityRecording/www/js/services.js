@@ -8,8 +8,8 @@ var services = angular.module('services', ['ngResource', 'config']);
  * zurueck. Der Status dient der Filterung der Behandlungsfaelle.
  * Status 0 = Alle, 1 = Patienten ohne Leistungen, 2 = Patienten mit Leistungen
  */
-services.factory('Patients', function($resource, ConfigService) {
-    return $resource(ConfigService.url() + 'patients', {state: '@state'}, {
+services.factory('Patients', function($resource, url) {
+    return $resource(url + 'patients', {state: '@state'}, {
     });
 });
 
@@ -19,24 +19,24 @@ services.factory('Patients', function($resource, ConfigService) {
  * Der Status dient der Filterung der Behandlungsfaelle.
  * Status 0 = Alle, 1 = Patienten ohne Leistungen, 2 = Patienten mit Leistungen
  */
-services.factory('MyPatients', function($resource, ConfigService) {
-    return $resource(ConfigService.url() + 'patients/supplier/:supplier', {supplier: '@supplier', state: '@state'}, {
+services.factory('MyPatients', function($resource, url) {
+    return $resource(url + 'patients/supplier/:supplier', {supplier: '@supplier', state: '@state'}, {
     });
 });
 
 /*
  * Der Rest-Service Patient gibt einen Behandlungsfall mit der Fallnummer fid zurueck
  */
-services.factory('Patient', function($resource, ConfigService ) {
-    return $resource(ConfigService.url() + 'patients/treatment/:fid', {fid: '@fid'}, {
+services.factory('Patient', function($resource, url ) {
+    return $resource(url + 'patients/treatment/:fid', {fid: '@fid'}, {
     });
 });
 
 /*
  * Der Rest-Service TimePeriode gibt alle Zeitraeme zurueck
  */
-services.factory('TimePeriode', function($resource, ConfigService ) {
-    return $resource(ConfigService.url() + 'timePeriods/treatment/:fid', {fid: '@fid'}, {
+services.factory('TimePeriode', function($resource, url ) {
+    return $resource(url + 'timePeriods/treatment/:fid', {fid: '@fid'}, {
     });
 });
 
@@ -45,16 +45,16 @@ services.factory('TimePeriode', function($resource, ConfigService ) {
  * fuer den Mitarbeiter empNr mit der Anzahl bereits erfassten Leistungen zu einem
  * Behandlungsfall fid zurueck.
  */
-services.factory('StandardCatalogue', function($resource, ConfigService) {
-    return $resource(ConfigService.url() + 'standardActivities/supplier/:empNr/:fid', {empNr: '@empNr', fid: '@fid'}, {
+services.factory('StandardCatalogue', function($resource, url) {
+    return $resource(url + 'standardActivities/supplier/:empNr/:fid', {empNr: '@empNr', fid: '@fid'}, {
     });
 });
 
 /*
  * Der Rest-Service Activity gibt die erfasste Leistung mit id zurueck.
  */
-services.factory('Activity', function($resource, ConfigService ) {
-    return $resource(ConfigService.url() + 'activities/:fid', {fid: '@fid'}, {
+services.factory('Activity', function($resource, url ) {
+    return $resource(url + 'activities/:fid', {fid: '@fid'}, {
     });
 });
 
@@ -168,56 +168,19 @@ services.factory('PatientService', function(Patient){
 /*
  * Der ConfigService stellt allgemeine Konfigurationsparameter zur Verfuegung.
  */
-services.factory('ConfigService', function(ConfigDB, $window, ip, employeeNr){
-    
-    var self = this;
-    self.urlString;
+services.factory('ConfigService', function(employeeNr, ip){
     var service = {};
-    service.empNr = employeeNr;
     service.ip = ip;
-    
-    service.url = function(){
-        return 'http\\://' + service.ip + '\\:8080/MLEBackend/webresources/';
-    };
+    service.empNr = employeeNr;
     
     service.saveConfig = function(){
-        ConfigDB.addConfig({id: "ip", ip: service.ip}).then(
-            function(){}, 
-            function(err){$window.alert(err);}
-        );
-        ConfigDB.addConfig({id: "empNr", empNr: service.empNr}).then(
-            function(){}, 
-            function(err){$window.alert(err);}
-        );
+        window.localStorage['ip'] = service.ip;
+        window.localStorage['empNr'] = service.empNr;
     };
-    
-    self.loadConfig = function(){
-        ConfigDB.getConfig("ip").then(
-            function(data){
-                service.ip = data.ip;
-                self.urlString = "http://" + data.ip + ":8080/MLEBackend/webresources/";
-            }, 
-            function(err){
-                $window.alert(err);
-            }
-        );
-        ConfigDB.getConfig("empNr").then(
-            function(data){
-                service.empNr = data.empNr;
-            }, 
-            function(err){
-                $window.alert(err);
-            }
-        );
+ 
+    service.deleteConfig = function(){
+        window.localStorage.clear();
     };
-  
-    self.init = function(){
-        ConfigDB.open().then(function(){
-            self.loadConfig();
-        });
-    };
-    
-    //self.init();
-
+ 
     return service;
 });

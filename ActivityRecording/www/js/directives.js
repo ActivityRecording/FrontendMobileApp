@@ -10,13 +10,13 @@ directives.directive('onSwipeLeft', function($parse, $ionicGesture) {
         link : function(scope, elem, attrs) {
             var fn = $parse(attrs.onSwipeLeft);
             $ionicGesture.on('swipeleft', function(event) {
-                console.log("swiped left");
+                //console.log("swiped left");
                 scope.$apply(function() {
                     fn(scope, {$event:event});
                 });
             }, elem);
         }
-    }
+    };
 });
 
 directives.directive('onSwipeRight', function($parse, $ionicGesture) {
@@ -25,13 +25,13 @@ directives.directive('onSwipeRight', function($parse, $ionicGesture) {
         link : function(scope, elem, attrs) {
             var fn = $parse(attrs.onSwipeRight);
             $ionicGesture.on('swiperight', function(event) {
-                console.log("swiped right");
+                //console.log("swiped right");
                 scope.$apply(function() {
                     fn(scope, {$event:event});
                 });
             }, elem);
         }
-    }
+    };
 });
 
 

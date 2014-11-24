@@ -8,14 +8,31 @@
  *          walls1@students.bfh.ch
  */
 
-var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'directives', 'controllers', 'services', 'config', 'indexedDB'])
+var ActivityRecordingApp = angular.module('ActivityRecordingApp', ['ionic', 'directives', 'controllers', 'services', 'config']);
+
+var ipAddress = window.localStorage['ip'] || '192.168.1.103';
+var employeeNr = window.localStorage['empNr'] || '10101';
+ActivityRecordingApp.constant("ip", ipAddress);
+ActivityRecordingApp.constant("employeeNr", employeeNr);
+ActivityRecordingApp.constant("url", "http://" + ipAddress + ":8080/MLEBackend/webresources/");
+
+angular.element(document).ready(function() {
+    if (window.cordova) {
+        document.addEventListener('deviceready', function() {
+            angular.bootstrap(document.body, ["ActivityRecordingApp"]);
+            }, false);
+    } else {
+            angular.bootstrap(document.body, ["ActivityRecordingApp"]);
+    }
+});
+
 
 /*
  * ionic wrapper to cordova's onDeviceRedy function
  * it will be called, as soon as the hole platfrom is ready by the device
  * Daher wird das NFC-Plugin via NDEF-Listener hier instanziert
  */
-.run(function($ionicPlatform, $state, TimeService) {
+ActivityRecordingApp.run(function($ionicPlatform, $state, TimeService) {
   $ionicPlatform.ready(function() {
       console.log('ionicPlattform ready');
       
@@ -65,9 +82,9 @@ var ActivityRecoridngApp = angular.module('ActivityRecordingApp', ['ionic', 'dir
         }
     );
   });
-})
+});
 
-.config(function($stateProvider, $urlRouterProvider) {
+ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
     
   //Ionic view tab states  
   $stateProvider

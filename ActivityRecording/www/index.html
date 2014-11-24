@@ -22,10 +22,11 @@
         <script src="js/indexeddb.js"></script>
 
         <!-- cordova start script -->
+        <!-- Needed for Cordova/PhoneGap (will be a 404 during development) -->
         <script src="cordova.js"></script>
 
     </head>
-    <body ng-app="ActivityRecordingApp">
+    <body ng-cloak>
 
     <ion-nav-bar class="tabs-striped tabs-top tabs-background-positive tabs-light">
     </ion-nav-bar>         
