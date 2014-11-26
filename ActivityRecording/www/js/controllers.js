@@ -110,6 +110,7 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
 
     $scope.catItems = StandardCatalogue.query({empNr: ConfigService.empNr, fid: $scope.fid});
     $scope.listCanSwipe = true;
+    $scope.leadingSign = '+';
     $scope.cnt = 1;
     $scope.sent = false;
     
@@ -134,10 +135,18 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
     
     $scope.reset = function(){
         $scope.cnt = 1;
+        $scope.leadingSign = '+';
+    };
+    
+    $scope.onHold = function(){
+         if($scope.leadingSign === '+')$scope.leadingSign = '-';
+         else $scope.leadingSign = '+';
     };
 
     $scope.submitData = function(amount, item) {
       var container = new Activity();
+      if(item.number < amount && $scope.leadingSign === '-') amount = item.number;
+      if($scope.leadingSign === '-') amount = amount * -1;
       container.employeeId = ConfigService.empNr;
       container.treatmentNumber = PatientService.curPatient.treatmentNumber;
       container.activities = [{tarmedActivityId: item.tarmedId, number: amount}];
@@ -146,6 +155,7 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
       item.capturedCount = item.capturedCount + amount;
       $ionicListDelegate.closeOptionButtons();
       $scope.cnt = 1;
+      $scope.leadingSign = '+';
     };
 
     $scope.toggleCatLists = function (type) {
@@ -247,8 +257,29 @@ function EditTimeCtrl($scope,TimePeriode, PatientService, ConfigService){
     };
 };
 
+function ApprovalCtrl($scope, TreatmentCase){
+    new TreatmentCase;
+    $scope.approvalItems = TreatmentCase.query();
+    
+    $scope.approve = function(item){
+        if(!item.released){
+            var index = $scope.approvalItems.indexOf(item);
+            var approvalItem = $scope.approvalItems[index];
+            var approval = new TreatmentCase(approvalItem);
+//            var approval = new TreatmentCase({"id":item.id,"treatmentNumber":item.treatmentNumber,"startTime":item.startTime,"released":item.released,
+//                                              "patient":{"id":item.patient.id,"patientNumber":item.patient.patientNumber,"lastName":item.patient.lastName,
+//                                                                                "firstName":item.patient.firstName,"dateOfBirth":item.patient.dateOfBirth}});
+            approval.endTime = new Date();
+            approval.update();
+            $scope.approvalItems = TreatmentCase.query();
+        }
+    };
+    
+};
+
 function HomeTabCtrl($scope, $state) {
-    $scope.goToPatients= function(mode){$state.go('tabs.patients', {edit: mode});};
+    $scope.goToPatients = function(mode){$state.go('tabs.patients', {edit: mode});};
+    $scope.goToApproval = function(){$state.go('tabs.approval');};
 };
 
 function ConfigCtrl($scope, ConfigService) {

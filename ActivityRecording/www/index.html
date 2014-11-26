@@ -55,7 +55,7 @@
                 <br><br>
                 <a class="button button-block button-positve icon-left ion-compose" ng-click="goToPatients(1)">Leistungen bearbeiten</a>       
                 <br><br>    
-                <a class="button button-block button-positve icon-left ion-checkmark" href="#/tab/time">Leistungen freigeben</a>
+                <a class="button button-block button-positve icon-left ion-checkmark" ng-click="goToApproval()">Leistungen freigeben</a>
             </ion-content>
         </ion-view>
     </script>
@@ -146,29 +146,37 @@
    <!-- Grundleistungen-->
     <div class="item item-divider" ng-click="toggleCatLists(0)"><h2>Grundleistungen</h2></div>
      <ion-list can-swipe="listCanSwipe" ng-show="visibleBase">
-        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1"  on-swipe-left="reset()">
-          <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
-          <span class="badge badge-assertive">{{catItem.capturedCount}}</span>
-             <div ng-if="!catItem.notSelectable" ng-class="{'running' : sent}">
-                <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
-                <ion-option-button class="button-light ion-plus-round"
-                            ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
-                <ion-option-button class="button-balanced ion-checkmark-round"
+        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1" on-swipe-left="reset()"
+                  ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">       
+            <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+                <div ng-if="catItem.capturedCount>0">
+                    <span class="badge badge-dark">{{catItem.capturedCount}}</span>
+                </div>
+                <div ng-if="!catItem.notSelectable">
+                    <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
+                    <ion-option-button class="button-light" on-hold="onHold()"
+                            ng-class="{'button-balanced' : leadingSign === '+','button-assertive' : leadingSign === '-'}"
+                            ng-click="setCnt(catItem)"> {{leadingSign}} {{cnt}}</ion-option-button>
+                    <ion-option-button class="button-balanced ion-checkmark-round"
                             ng-click="submitData(cnt, catItem)">
-                </ion-option-button>
-             </div>
+                    </ion-option-button>
+                </div>    
         </ion-item>
      </ion-list>
 
   <!-- Spezielle Leistungen -->
     <div class="item item-divider" ng-click="toggleCatLists(1)"><h2>Spezielle Leistungen</h2></div>
      <ion-list can-swipe="listCanSwipe" ng-show="visibleSpecial">
-        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 2">
-          <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 2" on-swipe-left="reset()"
+                  ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">
+            <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+                <div ng-if="catItem.capturedCount>0">
+                    <span class="badge badge-dark">{{catItem.capturedCount}}</span>
+                </div>
             <div ng-if="!catItem.notSelectable">
                 <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
-                <ion-option-button class="button-light ion-plus-round"
-                         ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
+                <ion-option-button class="button-light" on-hold="onHold()" 
+                         ng-click="setCnt(catItem)"> {{leadingSign}} {{cnt}} </ion-option-button>
                 <ion-option-button class="button-balanced ion-checkmark-round"
                         ng-click="submitData(cnt, catItem)">
                 </ion-option-button>
@@ -179,12 +187,16 @@
   <!-- Andere Leistungen-->
     <div class="item item-divider" ng-click="toggleCatLists(2)"><h2>Andere Leistungen</h2></div>
      <ion-list can-swipe="listCanSwipe" ng-show="visibleOthers">
-        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 3">
-          <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+        <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 3" on-swipe-left="reset()"
+                  ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">
+            <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
+                <div ng-if="catItem.capturedCount>0">
+                    <span class="badge badge-dark">{{catItem.capturedCount}}</span>
+                </div>
             <div ng-if="!catItem.notSelectable">
                  <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
-                 <ion-option-button class="button-light ion-plus-round"
-                           ng-click="setCnt(catItem)"> {{cnt}} </ion-option-button>
+                 <ion-option-button class="button-light" on-hold="onHold()" 
+                           ng-click="setCnt(catItem)"> {{leadingSign}} {{cnt}} </ion-option-button>
                  <ion-option-button class="button-balanced ion-checkmark-round"
                            ng-click="submitData(cnt, catItem)">
                  </ion-option-button>
@@ -210,9 +222,9 @@
                 </ion-item>
             </ion-list>
             <br>
-            <a class="button button-block icon-left ion-plus-circled" ng-click="goToCatalogue()">Leistungen hinzufügen</a>
+            <a class="button button-clear button-block button-outline button-balanced icon-left ion-plus-circled" ng-click="goToCatalogue()">Leistungen hinzufügen</a>
             <br>
-            <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-click="goToEditTime()">Zeiträume bearbeiten</a>
+            <a class="button button-clear button-block button-outline button-positive icon-left ion-ios7-stopwatch-outline" ng-click="goToEditTime()">Zeiträume bearbeiten</a>
 
         </ion-content>
         </ion-view>
@@ -242,32 +254,52 @@
                 </ion-list>
             </div>
             <div ng-show="showTimeEdit">
-                <label class="item item-input">Fall-Datum: {{startDate|date:'dd.MM.yyyy'}}</label>  
+                <label class="item item-input">
+                     <span class="input-label">Fall-Datum:</span>
+                     <span class="text">{{startDate|date:'dd.MM.yyyy'}}</span>
+                </label>  
                 <label class="item item-input">
                     <span class="input-label">Dauer:</span>
                      <input type="number" ng-model="duration.min">
                 </label>
-                <div class="button-bar">
-                    <a class="button button-clear button-assertive icon ion-close-circled" ng-click="toggleTimeEdit()">Abbrechen</a>
-                    <a class="button button-clear button-balanced icon ion-checkmark-circled" ng-click="addDuration(duration.min)">Hinzufügen</a>
-                </div>
+                <div class="row">
+                    <div class="col col-50">
+                        <a class="button button-clear button-block button-outline button-assertive icon ion-close-circled" ng-click="toggleTimeEdit()">Abbrechen</a>
+                    </div> 
+                    <div class="col col-50">
+                        <a class="button button-clear button-block button-outline button-balanced icon ion-checkmark-circled" ng-click="addDuration(duration.min)">Hinzufügen</a>
+                    </div>
             </div>          
         </ion-content>
         </ion-view>
     </script>
     
-        
-    <script id="templates/editdetail.html" type="text/ng-template">
-        <ion-view title="Leistungen bearbeiten" ng-controller="EditDetailCtrl">
+   
+    <script id="templates/approval.html" type="text/ng-template">
+        <ion-view title="Leistungen Freigeben" ng-controller="ApprovalCtrl">
         <ion-content>
-        <div class="list">
-        <div class="item">
-        @Leistungserbringer_ID
-        </div>
-        <div class="item">
-        @LE_Rolle
-        </div>
-        </div>
+           
+            <ion-list>
+                <ion-item ng-repeat="item in approvalItems" ng-disabled="item.released">
+                {{item.treatmentNumber}} {{item.patient.lastName}} {{item.patient.firstName}} {{item.patient.dateOfBirth|date:'dd.MM.yyyy'}}
+                    <label class="checkbox checkbox-balanced">
+                        <input type="checkbox" ng-model="item.released" ng-click="approve(item)">
+                    </label>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+        </ion-view>
+    </script>
+    
+    
+    <!-- Template Skeleton -->    
+    <script id="templates/editdetail.html" type="text/ng-template">
+        <ion-view title="Leistungen XY" ng-controller="XYCtrl">
+        <ion-content>
+            <div class="list">
+                <div class="item">@Leistungserbringer_ID</div>
+                <div class="item">@LE_Example</div>
+            </div>
         </ion-content>
         </ion-view>
     </script>

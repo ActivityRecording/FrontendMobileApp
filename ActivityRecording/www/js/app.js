@@ -10,7 +10,7 @@
 
 var ActivityRecordingApp = angular.module('ActivityRecordingApp', ['ionic', 'directives', 'controllers', 'services', 'config']);
 
-var ipAddress = window.localStorage['ip'] || '192.168.1.103';
+var ipAddress = window.localStorage['ip'] || '192.168.0.10';
 var employeeNr = window.localStorage['empNr'] || '10101';
 ActivityRecordingApp.constant("ip", ipAddress);
 ActivityRecordingApp.constant("employeeNr", employeeNr);
@@ -152,6 +152,16 @@ ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
       views: {
         'home-tab': {
           templateUrl: "templates/edittime.html"
+        }
+      }
+    })
+    
+    .state('tabs.approval', {
+      url: "/approval",
+      controller: ApprovalCtrl,
+      views: {
+        'home-tab': {
+          templateUrl: "templates/approval.html"
         }
       }
     })

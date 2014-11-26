@@ -59,6 +59,16 @@ services.factory('Activity', function($resource, url ) {
 });
 
 /*
+ * Der Rest-Service TreatmentCase gibt die erfasste Behandlungsfälle zurück.
+ */
+services.factory('TreatmentCase', function($resource, url ) {
+    return $resource(url + 'treatmentCases', {}, {
+//        'update': {method:'PUT'}
+    });
+});
+
+
+/*
  * Der TimeService dient der Messung eines Zeitraumes, waehrend dem ein Leistungserbringer 
  * eine Leistung fuer einen Patienten erbringt. Es wird im Hintergrund ein Timer
  * gestartet und die abgelaufene Zeit wird in der Variable seconds propagiert.
