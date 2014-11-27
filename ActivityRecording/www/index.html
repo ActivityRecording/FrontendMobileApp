@@ -168,7 +168,7 @@
             <!-- Grundleistungen-->
              <div class="item item-divider" ng-click="toggleCatLists(0)"><h2>Grundleistungen</h2></div>
               <ion-list can-swipe="listCanSwipe" ng-show="visibleBase">
-                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1" on-swipe-left="reset()"
+                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1" on-swipe-right="reset()"
                            ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">       
                      <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
                          <div ng-if="catItem.capturedCount>0">
@@ -189,7 +189,7 @@
             <!-- Spezielle Leistungen -->
              <div class="item item-divider" ng-click="toggleCatLists(1)"><h2>Spezielle Leistungen</h2></div>
               <ion-list can-swipe="listCanSwipe" ng-show="visibleSpecial">
-                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 2" on-swipe-left="reset()"
+                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 2" on-swipe-right="reset()"
                            ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">
                      <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
                          <div ng-if="catItem.capturedCount>0">
@@ -209,7 +209,7 @@
             <!-- Andere Leistungen-->
              <div class="item item-divider" ng-click="toggleCatLists(2)"><h2>Andere Leistungen</h2></div>
               <ion-list can-swipe="listCanSwipe" ng-show="visibleOthers">
-                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 3" on-swipe-left="reset()"
+                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 3" on-swipe-right="reset()"
                            ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">
                      <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
                          <div ng-if="catItem.capturedCount>0">
@@ -239,17 +239,18 @@
             <div ng-show="timeService.running == true">
                 <button class="button button-icon icon ion-loading-a" ui-sref="tabs.patTime"></button>
             </div>    
-        </ion-nav-buttons>             
-        <H3>Gemessene Zeit: {{fid}}       Verbuchte Zeit:</H3>
-        <br>
+        </ion-nav-buttons>  
+            <div class="text-center">
+                <h4>Gemessene Zeit: {{times.measuredHours}}:{{times.measuredMinutes}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes}}</h4>
+            </div>
+            <br>
         <a class="button button-block icon-left ion-plus-circled" ng-click="goToCatalogue()">Leistungen hinzufügen</a>
-        <br>
         <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-click="goToEditTime()">Zeiträume bearbeiten</a>
         <br>
         <div class="item item-divider"><h2>Zugeweisene Leistungen</h2></div>
             <ion-list show-delete="showDeleteButton">
                 <ion-item ng-repeat="activityItem in activityItems" class="item item-button-right">
-                      {{activityItem.tarmedActivityId}} {{activityItem.description}} {{activityItem.number}} {{activityItem.duration}}'  
+                      <h4>{{activityItem.tarmedActivityId}} {{activityItem.description}} {{activityItem.number}} {{activityItem.duration}}'</h4>  
                         <button class="button button-clear button-assertive button-icon icon ion-minus-circled" 
                                 ng-click="deleteItem(activityItem)"></button>    
                 </ion-item>
@@ -267,7 +268,9 @@
             </div>    
         </ion-nav-buttons>             
         <ion-content>
-            <H3>Behandlungszeit: {{fid}} Verrechnet: {{duration.min}}</H3>
+            <div class="text-center">
+                <h4>Gemessene Zeit: {{times.measuredHours}}:{{times.measuredMinutes}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes}}</h4>
+            </div>
             <br>
             <div class="item item-divider">
                 <div class="row">
@@ -280,7 +283,7 @@
             <div ng-show="!showTimeEdit">
                 <ion-list>
                     <ion-item ng-repeat="durationItem in durationItems" class="item item-button-right">
-                        {{durationItem.startTime|date:'dd.MM.yyyy : hh:mm'}}  {{durationItem.endTime|date:'- hh:mm'}}  {{durationItem.type}}'  
+                        <h4>{{durationItem.startTime|date:'dd.MM.yyyy : hh:mm'}}  {{durationItem.endTime|date:'- hh:mm'}}  {{durationItem.type}}'</h4>  
                             <button class="button button-clear button-assertive button-icon icon ion-minus-circled" ng-click="deleteItem(durationItem)"></button>    
                     </ion-item>
                 </ion-list>

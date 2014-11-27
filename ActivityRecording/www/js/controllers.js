@@ -218,14 +218,11 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
     };
 };
 
-function EditOverviewCtrl($scope, $state, Activity, TimeService, PatientService){
-    
-    //Lokale ControllerVariabeln
-    $scope.timeService = TimeService;
-    $scope.patientService = PatientService; 
+function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTime, employeeNr){
     
     $scope.activityItems = Activity.query({fid: PatientService.curPatient.treatmentNumber});
-    
+    $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
+
     $scope.deleteItem = function(item){
         var index = $scope.activityItems.indexOf(item);
         if (index !== -1) {
@@ -243,14 +240,14 @@ function EditOverviewCtrl($scope, $state, Activity, TimeService, PatientService)
     };
 };
 
-function EditTimeCtrl($scope,TimePeriode, TimeService, PatientService, ConfigService){
+function EditTimeCtrl($scope,TimePeriode, TimeService, PatientService, ConfigService, CumulatedTime){
     
     $scope.timeService = TimeService;
     $scope.fid = PatientService.curPatient.treatmentNumber;
     $scope.showTimeEdit = false;
   
-    new TimePeriode();
     $scope.durationItems = TimePeriode.query({fid: $scope.fid});
+    $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
   
     //Datum und Zeit für UI per "jetz" initiiert
     $scope.startDate = PatientService.curPatient.startTime;
@@ -275,6 +272,7 @@ function EditTimeCtrl($scope,TimePeriode, TimeService, PatientService, ConfigSer
         //Ausbelndung und Liste aktualisieren
         $scope.showTimeEdit = false;   
         $scope.durationItems = TimePeriode.query({fid: $scope.fid});
+        $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
     };
     
     $scope.toggleTimeEdit = function(){
@@ -287,13 +285,13 @@ function EditTimeCtrl($scope,TimePeriode, TimeService, PatientService, ConfigSer
         if (index !== -1) {
             $scope.durationItems.splice(index, 1);
             TimePeriode.delete({fid: item.timePeriodId});
+            $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
         }    
     };
 };
 
 function ApprovalCtrl($scope, TreatmentCase, TimeService){
     $scope.timeService = TimeService;
-    new TreatmentCase;
     $scope.approvalItems = TreatmentCase.query();
     
     $scope.approve = function(item){

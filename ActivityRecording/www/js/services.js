@@ -59,7 +59,7 @@ services.factory('Activity', function($resource, url ) {
 });
 
 /*
- * Der Rest-Service TreatmentCase gibt die erfasste Behandlungsfälle zurück.
+ * Der Rest-Service TreatmentCase gibt die erfassten Behandlungsfaelle zurück.
  */
 services.factory('TreatmentCase', function($resource, url ) {
     return $resource(url + 'treatmentCases', {}, {
@@ -67,6 +67,15 @@ services.factory('TreatmentCase', function($resource, url ) {
     });
 });
 
+/*
+ * Der Rest-Service CumulatedTimes gibt das Total der gemessenen und der 
+ * verbuchten Zeit (erfasste Leistungen) eines Leistungserbringers empNr 
+ * fuer den Behandlungsfall fid zurueck
+ */
+services.factory('CumulatedTime', function($resource, url ) {
+    return $resource(url + 'treatmentCases/times/:fid/:empNr', {fid: '@fid', empNr: '@empNr'}, {
+   });
+});
 
 /*
  * Der TimeService dient der Messung eines Zeitraumes, waehrend dem ein Leistungserbringer 

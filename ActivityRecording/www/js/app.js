@@ -5,17 +5,28 @@
  * Cordova-Plugins and MLE controllers, services and directives
  * 
  * Authors: haueb1@stutents.bfh.ch
- *          walls1@students.bfh.ch
+ *          walls2@students.bfh.ch
  */
 
 var ActivityRecordingApp = angular.module('ActivityRecordingApp', ['ionic', 'directives', 'controllers', 'services', 'config']);
 
-var ipAddress = window.localStorage['ip'] || '192.168.0.10';
+/*
+ * Lesen und Initialisieren der Konfiguration vom LocalStorage.
+ * Die Initialisierung der Konstanten, insbesondere der URL, muss vor 
+ * dem Angular Bootstraping erfolgen. Das Bootstraping wird daher manuell 
+ * ausgelöst und im index.html darf keine ng-app Directive angegeben werden.
+ */
+var ipAddress = window.localStorage['ip'] || '192.168.1.103';
 var employeeNr = window.localStorage['empNr'] || '10101';
 ActivityRecordingApp.constant("ip", ipAddress);
 ActivityRecordingApp.constant("employeeNr", employeeNr);
 ActivityRecordingApp.constant("url", "http://" + ipAddress + ":8080/MLEBackend/webresources/");
 
+/* 
+ * Starten des Bootstraping von Angularjs 
+ * Fuer die Cordova-Umgebung (Smartphone) muss das deviceready-Event abgewartet werden.
+ * In einer Browser-Umgebung kann das Bootstraping direkt gestartet werden.
+ */
 angular.element(document).ready(function() {
     if (window.cordova) {
         document.addEventListener('deviceready', function() {
