@@ -106,11 +106,9 @@ ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('tabs.home', {
       url: "/home",
-      controller: HomeTabCtrl,
       views: {
         'home-tab': {
-          templateUrl: "templates/home.html",
-          controller: 'HomeTabCtrl'
+          templateUrl: "templates/home.html"
         }
       }
     })
@@ -118,7 +116,6 @@ ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
     //Patients overview state
     .state('tabs.patients', {
       url: "/patients/:edit",
-      controller: PatientsCtrl,
       views: {
         'home-tab': {
           templateUrl: "templates/patients.html"
@@ -128,8 +125,7 @@ ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
     
     //Patient activity time state 
     .state('tabs.patTime', {
-      url: "/patients/treatment/:fid",
-      controller: PatientTimeCtrl,
+      url: "/patients/treatment/",
       views: {
         'home-tab': {
           templateUrl: "templates/patient.html"
@@ -138,8 +134,7 @@ ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
     })
 
     .state('tabs.catalogue', {
-      url: "/catalogue/:fid",
-      controller: CatalogueCtrl,
+      url: "/catalogue",
       views: {
         'home-tab': {
           templateUrl: "templates/catalogue.html"
@@ -148,8 +143,7 @@ ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
     })
     
     .state('tabs.editoverview', {
-      url: "/editoverview/:fid",
-      controller: EditOverviewCtrl,
+      url: "/editoverview",
       views: {
         'home-tab': {
           templateUrl: "templates/editoverview.html"
@@ -158,8 +152,7 @@ ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
     })
     
     .state('tabs.edittime', {
-      url: "/edittime/:fid",
-      controller: EditTimeCtrl,
+      url: "/edittime",
       views: {
         'home-tab': {
           templateUrl: "templates/edittime.html"
@@ -169,7 +162,6 @@ ActivityRecordingApp.config(function($stateProvider, $urlRouterProvider) {
     
     .state('tabs.approval', {
       url: "/approval",
-      controller: ApprovalCtrl,
       views: {
         'home-tab': {
           templateUrl: "templates/approval.html"

@@ -236,11 +236,11 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTim
     };
     
     $scope.goToEditTime = function(){
-        $state.go('tabs.edittime', {fid: PatientService.curPatient.treatmentNumber});
+        $state.go('tabs.edittime');
     };
 };
 
-function EditTimeCtrl($scope,TimePeriode, TimeService, PatientService, ConfigService, CumulatedTime){
+function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigService, CumulatedTime){
     
     $scope.timeService = TimeService;
     $scope.fid = PatientService.curPatient.treatmentNumber;
