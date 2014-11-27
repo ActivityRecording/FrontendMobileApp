@@ -18,6 +18,7 @@ function MenuController($scope, $route, $routeParams, $location) {
  */
 function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, ConfigService, TimeService, PatientService) {
 
+    $scope.timeService = TimeService;
     $scope.empNr = ConfigService.empNr;
 
     //Select Option Model
@@ -104,10 +105,10 @@ function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
  * Catalogcontroller: Verwaltet die Tarmed StandardKatalog Leistungen und 
  * übermittelt ausgewählte Leistungen des Benutzers an das Backend
  */
-function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, PatientService, ConfigService) {
+function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, TimeService, PatientService, ConfigService) {
     
+    $scope.timeService = TimeService;
     $scope.fid = PatientService.curPatient.treatmentNumber; 
-
     $scope.catItems = StandardCatalogue.query({empNr: ConfigService.empNr, fid: $scope.fid});
     $scope.listCanSwipe = true;
     $scope.leadingSign = '+';
@@ -186,9 +187,10 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
     };
 };
 
-function EditOverviewCtrl($scope, $state, Activity, PatientService){
+function EditOverviewCtrl($scope, $state, Activity, TimeService, PatientService){
     
     //Lokale ControllerVariabeln
+    $scope.timeService = TimeService;
     $scope.patientService = PatientService; 
     
     $scope.activityItems = Activity.query({fid: PatientService.curPatient.treatmentNumber});
@@ -210,8 +212,9 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService){
     };
 };
 
-function EditTimeCtrl($scope,TimePeriode, PatientService, ConfigService){
-        
+function EditTimeCtrl($scope,TimePeriode, TimeService, PatientService, ConfigService){
+    
+    $scope.timeService = TimeService;
     $scope.fid = PatientService.curPatient.treatmentNumber;
     $scope.showTimeEdit = false;
   
@@ -257,7 +260,8 @@ function EditTimeCtrl($scope,TimePeriode, PatientService, ConfigService){
     };
 };
 
-function ApprovalCtrl($scope, TreatmentCase){
+function ApprovalCtrl($scope, TreatmentCase, TimeService){
+    $scope.timeService = TimeService;
     new TreatmentCase;
     $scope.approvalItems = TreatmentCase.query();
     
@@ -277,12 +281,14 @@ function ApprovalCtrl($scope, TreatmentCase){
     
 };
 
-function HomeTabCtrl($scope, $state) {
+function HomeTabCtrl($scope, $state, TimeService) {
+    $scope.timeService = TimeService;
     $scope.goToPatients = function(mode){$state.go('tabs.patients', {edit: mode});};
     $scope.goToApproval = function(){$state.go('tabs.approval');};
 };
 
-function ConfigCtrl($scope, ConfigService) {
+function ConfigCtrl($scope, TimeService, ConfigService) {
+    $scope.timeService = TimeService;
     $scope.config = ConfigService; 
     
     $scope.saveConfig = function(){
