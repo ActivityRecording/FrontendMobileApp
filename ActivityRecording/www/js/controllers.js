@@ -6,17 +6,16 @@
 var controllers = angular.module('controllers', ['services', 'config']);
 
 function MenuController($scope, $route, $routeParams, $location) {
-
     $scope.$route = $route;
     $scope.$location = $location;
     $scope.$routeParams = $routeParams;
 };
 
 /*
- * Patients Controller returns all treatmentCases, their states and it's patient
- * Filter of Treatment-Types is realized with query State Parameters
+ * Patienten Controller liefert alle treatmentCases, deren  States und den Patienten zurück
+ * Der Filter ist mit dem Query-Parameter State implementiert
  */
-function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, ConfigService, TimeService, PatientService) {
+function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPatients, ConfigService, TimeService, PatientService) {
 
     $scope.timeService = TimeService;
     $scope.empNr = ConfigService.empNr;
@@ -46,15 +45,47 @@ function PatientsCtrl($scope, $stateParams, $state, Patients, MyPatients, Config
             $scope.patients = Patients.query({state: state});
         }
     };
+    
+    //Bestaetigungs-Pop-Up
+    $scope.showConfirm = function(fid) {
+        var self = this;
+        self.fid = fid;
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Laufende Zeitmessung beenden',
+            template: 'Wollen Sie die laufende Zeitmessung beenden?'
+        });
+        confirmPopup.then(function(res) {
+            if(res) {
+                TimeService.stop();
+                PatientService.updatePatient(self.fid);
+                PatientService.curPatient.$promise.then(function(){$state.go('tabs.editoverview');});
+            }else {
+                //Nothing to do
+            }
+        });
+    };
 
-    //Transition to PatientTimeCtrl start or to EditOverviewCntrl    
+    /**
+     * Transition nach PatientTimeCtrl und startet die Zeitmessung
+     * oder eine Transition nach EditOverviewCntrl    
+     * @param {type} fid
+     */
     $scope.goTo = function (fid) {
+        //Pfad: "Zeitmessung starten"
         if($stateParams.edit == 0){
             TimeService.start(fid);
             PatientService.curPatient.$promise.then(function(){$state.go('tabs.patTime');});
-        }else{
-            PatientService.updatePatient(fid);
-            PatientService.curPatient.$promise.then(function(){$state.go('tabs.editoverview');});
+        }    
+        //Pfad: "Leistungen bearbeiten"
+        else{
+            //Gibt es eine laufende Zeitmessung
+            if($scope.timeService.running && $scope.timeService.fid !== fid ){
+                 this.showConfirm(fid);
+            }
+            else{
+                PatientService.updatePatient(fid);
+                PatientService.curPatient.$promise.then(function(){$state.go('tabs.editoverview');});
+            }
         }
     };
 };

@@ -28,11 +28,9 @@
     </head>
     <body ng-cloak>
             
-      <ion-nav-bar class="tabs-striped tabs-top tabs-background-positive tabs-light">
-                <!--<ion-nav-back-button class="button-icon ion-arrow-left-c">-->
-      </ion-nav-back-button>
-      </ion-nav-bar>
-      <ion-nav-view animation="slide-left-right"></ion-nav-view>
+    <ion-nav-bar class="tabs-striped tabs-top tabs-background-positive tabs-light">
+    </ion-nav-bar>
+    <ion-nav-view animation="slide-left-right"></ion-nav-view>
                  
     <script id="templates/tabs.html" type="text/ng-template">
         <ion-tabs class="abs-striped tabs-top tabs-background-positive tabs-light">       
@@ -101,15 +99,12 @@
           </label>
           </div>
         </div>
-
         <!-- Patientenliste -->   
         <ion-list>
-        <ion-item ng-repeat="patient in patients" 
-        ng-class="{ 'editItem' : patient.status === 1,
-        'newItem' : patient.status === 2}"
-        ng-click="goTo(patient.treatmentNumber)">  
-        <p>{{patient.lastName}} {{patient.firstName}} {{patient.dateOfBirth|date:'dd.MM.yyyy'}} [{{patient.patientNumber}}/{{patient.treatmentNumber}}]</p>
-        </ion-item>
+            <ion-item ng-repeat="patient in patients" ng-class="{ 'editItem' : patient.status === 1,'newItem' : patient.status === 2}"
+                  ng-click="goTo(patient.treatmentNumber)">  
+            <p>{{patient.lastName}} {{patient.firstName}} {{patient.dateOfBirth|date:'dd.MM.yyyy'}} [{{patient.patientNumber}}/{{patient.treatmentNumber}}]</p>
+            </ion-item>
         </ion-list>
         </ion-content>
         </ion-view>
@@ -246,7 +241,11 @@
             </div>    
         </ion-nav-buttons>             
         <H3>Gemessene Zeit: {{fid}}       Verbuchte Zeit:</H3>
-        <br><br>
+        <br>
+        <a class="button button-block icon-left ion-plus-circled" ng-click="goToCatalogue()">Leistungen hinzufügen</a>
+        <br>
+        <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-click="goToEditTime()">Zeiträume bearbeiten</a>
+        <br>
         <div class="item item-divider"><h2>Zugeweisene Leistungen</h2></div>
             <ion-list show-delete="showDeleteButton">
                 <ion-item ng-repeat="activityItem in activityItems" class="item item-button-right">
@@ -255,11 +254,6 @@
                                 ng-click="deleteItem(activityItem)"></button>    
                 </ion-item>
             </ion-list>
-            <br>
-            <a class="button button-clear button-block button-outline button-balanced icon-left ion-plus-circled" ng-click="goToCatalogue()">Leistungen hinzufügen</a>
-            <br>
-            <a class="button button-clear button-block button-outline button-positive icon-left ion-ios7-stopwatch-outline" ng-click="goToEditTime()">Zeiträume bearbeiten</a>
-
         </ion-content>
         </ion-view>
     </script>
@@ -274,11 +268,10 @@
         </ion-nav-buttons>             
         <ion-content>
             <H3>Behandlungszeit: {{fid}} Verrechnet: {{duration.min}}</H3>
-            <H3>Pflegezeit:       {{startDate}}       Verrechnet: {{startTime}} </H3>
-            <br><br>
+            <br>
             <div class="item item-divider">
                 <div class="row">
-                    <div class="col col-80 text-left center-content"><h2>Behandlungszeiträume</h2></div>
+                    <div class="col col-80 text-left center-content"><H2>Behandlungszeiträume</H2></div>
                     <div class="col col-20 text-right">
                         <a class="button button-balanced button-clear icon ion-plus-circled" ng-click="toggleTimeEdit()"></a>
                     </div>
