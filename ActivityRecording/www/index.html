@@ -18,8 +18,8 @@
         <script src="js/config.js"></script>
         <script src="js/services.js"></script>     
         <script src="js/controllers.js"></script>
+        <script src="js/filters.js"></script>
         <script src="js/app.js"></script>
-        <script src="js/indexeddb.js"></script>
 
         <!-- cordova start script -->
         <!-- Needed for Cordova/PhoneGap (will be a 404 during development) -->
@@ -241,7 +241,7 @@
             </div>    
         </ion-nav-buttons>  
             <div class="text-center">
-                <h4>Gemessene Zeit: {{times.measuredHours}}:{{times.measuredMinutes}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes}}</h4>
+                <h4>Gemessene Zeit: {{times.measuredHours}}:{{times.measuredMinutes | numberFixedLen: 2}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes | numberFixedLen: 2}}</h4>
             </div>
             <br>
         <a class="button button-block icon-left ion-plus-circled" ng-click="goToCatalogue()">Leistungen hinzufügen</a>
@@ -269,7 +269,7 @@
         </ion-nav-buttons>             
         <ion-content>
             <div class="text-center">
-                <h4>Gemessene Zeit: {{times.measuredHours}}:{{times.measuredMinutes}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes}}</h4>
+                <h4>Gemessene Zeit: {{times.measuredHours}}:{{times.measuredMinutes | numberFixedLen: 2}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes | numberFixedLen: 2}}</h4>
             </div>
             <br>
             <div class="item item-divider">
