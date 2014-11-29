@@ -78,6 +78,15 @@ services.factory('CumulatedTime', function($resource, url ) {
 });
 
 /*
+ * Der Rest-Service ApprovalService dient der Freigabe einer Behandlungsfalles fid
+ * durch den Leistungserbringer empNr
+ */
+services.factory('ApprovalService', function($resource, url ) {
+    return $resource(url + 'approval/:empNr/:fid', {empNr: '@empNr', fid: '@fid'}, {
+   });
+});
+
+/*
  * Der TimeService dient der Messung eines Zeitraumes, waehrend dem ein Leistungserbringer 
  * eine Leistung fuer einen Patienten erbringt. Es wird im Hintergrund ein Timer
  * gestartet und die abgelaufene Zeit wird in der Variable seconds propagiert.
