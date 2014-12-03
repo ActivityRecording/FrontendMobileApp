@@ -133,63 +133,69 @@ function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
 };
 
 /*
- * Catalogcontroller: Verwaltet die Tarmed StandardKatalog Leistungen und 
- * übermittelt ausgewählte Leistungen des Benutzers an das Backend
- */
+* Catalogcontroller: Zeigt den Standard-Leistungskatalog an und 
+* übermittelt ausgewählte Leistungen des Benutzers an das Backend
+*/
 function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, TimeService, PatientService, ConfigService) {
-    
+ 
     $scope.timeService = TimeService;
     $scope.fid = PatientService.curPatient.treatmentNumber; 
     $scope.catItems = StandardCatalogue.query({empNr: ConfigService.empNr, fid: $scope.fid});
     $scope.listCanSwipe = true;
-    $scope.leadingSign = '+';
+    $scope.step = 1;
     $scope.cnt = 1;
-    $scope.sent = false;
-    
+ 
     /*
-     * Initial werden alle Leistungsgruppen ausgeblendet,
-     * um den Benutzer eine besser Übersicht zu bieten
+     * Initial werden alle Leistungsgruppen ausgeblendet
      */
     $scope.visibleBase = false;
     $scope.visibleSpecial = false;
     $scope.visibleOthers = false;
-
+ 
     /*
-     *  Fügt solange eine zusätzliche Einheit hinzu,
-     *  wie es die Katalog-Kardinalität zulässt
+     *  Addiert oder subtrahiert 1 zur Anzahl cnt der ausgewählten Leistung item.
+     *  Das Total der ausgewaehlten und der bereits erfassten Anzahl (cnt + capturedCount)
+     *  darf beim Erhoehen nicht groesser werden als die Kardinalitaet der Leistung.
+     *  Beim Verringern der Anzahl darf diese nicht kleiner werden als 0.
+     *  Die Anzahl darf nicht 0 sein. 0 wird beim Subtrahieren und Addieren uebersprungen
      */
     $scope.setCnt = function (item) {
-        if (item.cardinality <= ($scope.cnt + item.capturedCount))
-            $scope.cnt = item.cardinality - item.capturedCount;
-        else 
-            $scope.cnt++;
+        if (($scope.step > 0 && $scope.cnt + item.capturedCount < item.cardinality) || 
+            ($scope.step < 0 && $scope.cnt + item.capturedCount > 0)){
+                $scope.cnt = $scope.cnt + $scope.step;
+                // Ueberspringen von 0
+                if ($scope.cnt === 0 && $scope.step > 0){
+                    $scope.cnt = 1;
+                } else if ($scope.cnt === 0 && $scope.step < 0 && item.capturedCount > 0){
+                    $scope.cnt = -1;
+                } else if ($scope.cnt === 0 && $scope.step < 0 && item.capturedCount <= 0){
+                    $scope.cnt = 1;
+                }
+            }
     };
-    
+ 
     $scope.reset = function(){
         $scope.cnt = 1;
-        $scope.leadingSign = '+';
+        $scope.step = 1;
     };
-    
+ 
     $scope.onHold = function(){
-         if($scope.leadingSign === '+')$scope.leadingSign = '-';
-         else $scope.leadingSign = '+';
+         $scope.step = $scope.step * -1;
     };
-
+ 
     $scope.submitData = function(amount, item) {
+      if (amount === 0)
+          return;
       var container = new Activity();
-      if(item.number < amount && $scope.leadingSign === '-') amount = item.number;
-      if($scope.leadingSign === '-') amount = amount * -1;
       container.employeeId = ConfigService.empNr;
       container.treatmentNumber = PatientService.curPatient.treatmentNumber;
       container.activities = [{tarmedActivityId: item.tarmedId, number: amount}];
       container.$save();
-      $scope.sent = true;
       item.capturedCount = item.capturedCount + amount;
       $ionicListDelegate.closeOptionButtons();
-      $scope.cnt = 1;
-      $scope.leadingSign = '+';
+      $scope.reset();
     };
-
+ 
     $scope.toggleCatLists = function (type) {
         //Grundleistungen
         if (type === 0) {
@@ -217,7 +223,7 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
         } 
     };
 };
-
+ 
 function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTime, employeeNr){
     
     $scope.activityItems = Activity.query({fid: PatientService.curPatient.treatmentNumber});

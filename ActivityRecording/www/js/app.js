@@ -8,7 +8,7 @@
  *          walls2@students.bfh.ch
  */
 
-var ActivityRecordingApp = angular.module('ActivityRecordingApp', ['ionic', 'directives', 'controllers', 'services', 'config', 'filters']);
+var ActivityRecordingApp = angular.module('ActivityRecordingApp', ['ionic', 'controllers', 'services', 'config', 'filters']);
 
 /*
  * Lesen und Initialisieren der Konfiguration vom LocalStorage.

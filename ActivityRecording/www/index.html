@@ -14,7 +14,6 @@
         <script src="lib/ionic/js/angular/angular-resource.js"></script>
 
         <!-- MLE App's js -->
-        <script src="js/directives.js"></script>
         <script src="js/config.js"></script>
         <script src="js/services.js"></script>     
         <script src="js/controllers.js"></script>
@@ -168,7 +167,7 @@
             <!-- Grundleistungen-->
              <div class="item item-divider" ng-click="toggleCatLists(0)"><h2>Grundleistungen</h2></div>
               <ion-list can-swipe="listCanSwipe" ng-show="visibleBase">
-                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1" on-swipe-right="reset()"
+                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 1" on-swipe="reset()"
                            ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">       
                      <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
                          <div ng-if="catItem.capturedCount>0">
@@ -177,8 +176,8 @@
                          <div ng-if="!catItem.notSelectable">
                              <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
                              <ion-option-button class="button-light" on-hold="onHold()"
-                                     ng-class="{'button-balanced' : leadingSign === '+','button-assertive' : leadingSign === '-'}"
-                                     ng-click="setCnt(catItem)"> {{leadingSign}} {{cnt}}</ion-option-button>
+                                     ng-class="{'button-balanced' : step > 0,'button-assertive' : step < 0}"
+                                     ng-click="setCnt(catItem)">{{cnt}}</ion-option-button>
                              <ion-option-button class="button-balanced ion-checkmark-round"
                                      ng-click="submitData(cnt, catItem)">
                              </ion-option-button>
@@ -189,7 +188,7 @@
             <!-- Spezielle Leistungen -->
              <div class="item item-divider" ng-click="toggleCatLists(1)"><h2>Spezielle Leistungen</h2></div>
               <ion-list can-swipe="listCanSwipe" ng-show="visibleSpecial">
-                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 2" on-swipe-right="reset()"
+                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 2" on-swipe="reset()"
                            ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">
                      <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
                          <div ng-if="catItem.capturedCount>0">
@@ -198,7 +197,8 @@
                      <div ng-if="!catItem.notSelectable">
                          <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
                          <ion-option-button class="button-light" on-hold="onHold()" 
-                                  ng-click="setCnt(catItem)"> {{leadingSign}} {{cnt}} </ion-option-button>
+                                     ng-class="{'button-balanced' : step > 0,'button-assertive' : step < 0}"
+                                     ng-click="setCnt(catItem)">{{cnt}}</ion-option-button>
                          <ion-option-button class="button-balanced ion-checkmark-round"
                                  ng-click="submitData(cnt, catItem)">
                          </ion-option-button>
@@ -209,7 +209,7 @@
             <!-- Andere Leistungen-->
              <div class="item item-divider" ng-click="toggleCatLists(2)"><h2>Andere Leistungen</h2></div>
               <ion-list can-swipe="listCanSwipe" ng-show="visibleOthers">
-                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 3" on-swipe-right="reset()"
+                 <ion-item ng-repeat="catItem in catItems" ng-show="catItem.category === 3" on-swipe="reset()"
                            ng-class="{'item item-balanced' : catItem.capturedCount > 0, 'item' : catItem.capturedCount === 0,}">
                      <h4>{{catItem.tarmedId}}: {{catItem.description}}</h4>
                          <div ng-if="catItem.capturedCount>0">
@@ -218,7 +218,8 @@
                      <div ng-if="!catItem.notSelectable">
                           <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
                           <ion-option-button class="button-light" on-hold="onHold()" 
-                                    ng-click="setCnt(catItem)"> {{leadingSign}} {{cnt}} </ion-option-button>
+                                     ng-class="{'button-balanced' : step > 0,'button-assertive' : step < 0}"
+                                     ng-click="setCnt(catItem)">{{cnt}}</ion-option-button>
                           <ion-option-button class="button-balanced ion-checkmark-round"
                                     ng-click="submitData(cnt, catItem)">
                           </ion-option-button>
