@@ -287,12 +287,12 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
         newPeriode.treatmentNumber = $scope.fid;
         newPeriode.startTime = from;
         newPeriode.endTime = to;
-        newPeriode.$save();
-
-        //Ausbelndung und Liste aktualisieren
-        $scope.showTimeEdit = false;
-        $scope.durationItems = TimePeriode.query({fid: $scope.fid});
-        $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
+        newPeriode.$save().then(function(){
+            //Ausbelndung und Liste aktualisieren
+            $scope.showTimeEdit = false;
+            $scope.durationItems = TimePeriode.query({fid: $scope.fid});
+            $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
+        });
     };
 
     $scope.toggleTimeEdit = function () {
@@ -304,12 +304,12 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
 
     $scope.deleteItem = function (item) {
         var index = $scope.durationItems.indexOf(item);
-        if (index !== -1) {
+        if (index === -1) return;
+        TimePeriode.delete({fid: item.timePeriodId},function(){
             $scope.durationItems.splice(index, 1);
-            TimePeriode.delete({fid: item.timePeriodId});
             $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
-        }
-    };
+        });
+     };
 }
 ;
 
