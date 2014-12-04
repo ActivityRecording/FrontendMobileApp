@@ -260,7 +260,7 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTim
 }
 ;
 
-function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigService, CumulatedTime) {
+function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigService, CumulatedTime, employeeNr) {
 
     $scope.timeService = TimeService;
     $scope.fid = PatientService.curPatient.treatmentNumber;
@@ -280,7 +280,7 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
     $scope.addDuration = function (min) {
         var from = PatientService.curPatient.startTime;
         var to = new Date(from);
-        to.setMinutes(to.getMinutes() + min - 120);
+        to.setMinutes(to.getMinutes() + min);
 
         //Erstellen des neuen Eintrages per POST
         var newPeriode = new TimePeriode({'timePeriodId': null, 'type': 'TREATMENT', 'employeeId': ConfigService.empNr});
