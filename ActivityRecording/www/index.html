@@ -320,9 +320,8 @@
         </ion-nav-buttons>             
         <ion-content class="padding">
              <ion-list can-swipe="listCanSwipe">
-                 <ion-item ng-repeat="item in approvalItems"
-                           ng-class="{'item item-balanced' : item.released, 'item' : !item.released,}">       
-                     <h4> {{item.treatmentNumber}} {{item.patient.lastName}} {{item.patient.firstName}} {{item.patient.dateOfBirth|date:'dd.MM.yyyy'}}</h4>
+                 <ion-item ng-repeat="item in approvalItems">       
+                     <h4>[{{item.treatmentNumber}}/{{item.patientNumber}}] {{item.lastName}} {{item.firstName}} {{item.dateOfBirth|date:'dd.MM.yyyy'}}</h4>
                         <div ng-if="!item.released">
                              <ion-option-button class="button-balanced ion-checkmark-round"
                                      ng-click="approve(item)">Freigeben</ion-option-button>

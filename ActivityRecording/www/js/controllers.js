@@ -313,10 +313,12 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
 }
 ;
 
-function ApprovalCtrl($scope,$ionicListDelegate, $ionicPopup, Approval, TreatmentCase, TimeService, employeeNr) {
+function ApprovalCtrl($scope,$ionicListDelegate, $ionicPopup, Approval, MyPatients, TimeService, employeeNr) {
     
     $scope.timeService = TimeService;
-    $scope.approvalItems = TreatmentCase.query();
+    //Alle offenen Fälle per Leistungserbringer
+    $scope.approvalItems = MyPatients.query({supplier: employeeNr, state: 2});
+
     $scope.listCanSwipe = true;
 
     $scope.approve = function (item) {
@@ -329,7 +331,8 @@ function ApprovalCtrl($scope,$ionicListDelegate, $ionicPopup, Approval, Treatmen
             else {
                 var approval = new Approval({empNr: employeeNr, fid: curItem.treatmentNumber});
                 approval.$save();
-                $scope.approvalItems = TreatmentCase.query();
+                $scope.approvalItems.splice(index,1);
+                //$scope.approvalItems =  MyPatients.query({supplier: employeeNr, state: 2});
                 $ionicListDelegate.closeOptionButtons();
             }
         }
