@@ -33,6 +33,15 @@ services.factory('Patient', function($resource, url ) {
 });
 
 /*
+ * Der REST-Service Suppliers gibt Leistungserbringer zurueck.
+ */
+services.factory('Supplier', function($resource, url) {
+    return $resource(url + 'suppliers', {}, {
+    });
+});
+
+
+/*
  * Der Rest-Service TimePeriode gibt alle Zeitraeme zurueck
  */
 services.factory('TimePeriode', function($resource, url ) {
