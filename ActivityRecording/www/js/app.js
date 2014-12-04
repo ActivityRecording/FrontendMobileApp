@@ -56,28 +56,15 @@ ActivityRecordingApp.run(function($ionicPlatform, $state, TimeService) {
             // assuming the first record in the message has 
             // a payload that can be converted to a string.
             var obj = nfc.bytesToString(ndefMessage[0].payload).substring(3);
-            //alert(obj.toString());
             
-            var fid = obj.substring(11,15);
-            //alert('Patienten-ID: ' +pid +' Fall-ID: '+fid);
+            var fidString = obj.substring(11,15);
+            var fid = parseInt(fidString);
             
-            //NFC-Scan im Home Bildschrim
-            if($state.includes('tabs.home')){
-                TimeService.start(fid);
-                $state.go('tabs.patTime');   
-            };
-            
-            //NFC-Scann aus der Patientenübersicht
-            if($state.includes('tabs.patients')){
-                TimeService.start(fid); 
-                $state.go('tabs.patTime');   
-            }
-            //NFC-Scann aus der Zeit und Leistungserassungsübersicht
             if($state.includes('tabs.patTime')){   
+                //NFC-Scan auf der Zeitmessungsübersicht (Kein Seitenwechsel notwendig)
                 TimeService.start(fid); 
-            }
-            //NFC-Scann aus der Leistungskatalog
-            if($state.includes('tabs.catalogue')){
+            } else {
+                //NFC-Scan aus allen anderen States
                 TimeService.start(fid); 
                 $state.go('tabs.patTime');   
             }
