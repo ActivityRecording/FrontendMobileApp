@@ -318,14 +318,16 @@
                 <button class="button button-icon icon ion-loading-a" ui-sref="tabs.patTime"></button>
             </div>    
         </ion-nav-buttons>             
-        <ion-content>           
-            <ion-list>
-                <ion-item ng-repeat="item in approvalItems" ng-disabled="item.released">
-                {{item.treatmentNumber}} {{item.patient.lastName}} {{item.patient.firstName}} {{item.patient.dateOfBirth|date:'dd.MM.yyyy'}}
-                    <label class="checkbox checkbox-balanced">
-                        <input type="checkbox" ng-model="item.released" ng-click="approve(item)">
-                    </label>
-                </ion-item>
+        <ion-content class="padding">
+             <ion-list can-swipe="listCanSwipe">
+                 <ion-item ng-repeat="item in approvalItems"
+                           ng-class="{'item item-balanced' : item.released, 'item' : !item.released,}">       
+                     <h4> {{item.treatmentNumber}} {{item.patient.lastName}} {{item.patient.firstName}} {{item.patient.dateOfBirth|date:'dd.MM.yyyy'}}</h4>
+                        <div ng-if="!item.released">
+                             <ion-option-button class="button-balanced ion-checkmark-round"
+                                     ng-click="approve(item)">Freigeben</ion-option-button>
+                        </div>    
+                 </ion-item>
             </ion-list>
         </ion-content>
         </ion-view>

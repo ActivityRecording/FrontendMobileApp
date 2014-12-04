@@ -81,7 +81,7 @@ services.factory('CumulatedTime', function($resource, url ) {
  * Der Rest-Service ApprovalService dient der Freigabe einer Behandlungsfalles fid
  * durch den Leistungserbringer empNr
  */
-services.factory('ApprovalService', function($resource, url ) {
+services.factory('Approval', function($resource, url ) {
     return $resource(url + 'approval/:empNr/:fid', {empNr: '@empNr', fid: '@fid'}, {
    });
 });
