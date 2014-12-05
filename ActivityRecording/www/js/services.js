@@ -45,7 +45,7 @@ services.factory('Supplier', function($resource, url) {
  * Der Rest-Service TimePeriode gibt alle Zeitraeme zurueck
  */
 services.factory('TimePeriode', function($resource, url ) {
-    return $resource(url + 'timePeriods/treatment/:fid', {fid: '@fid'}, {
+    return $resource(url + 'timePeriods/:fid/:empNr', {fid: '@fid', empNr: '@empNr'}, {
     });
 });
 
@@ -63,7 +63,7 @@ services.factory('StandardCatalogue', function($resource, url) {
  * Der Rest-Service Activity gibt die erfasste Leistung mit id zurueck.
  */
 services.factory('Activity', function($resource, url ) {
-    return $resource(url + 'activities/:fid', {fid: '@fid'}, {
+    return $resource(url + 'activities/:fid/:empNr', {fid: '@fid', empNr: '@empNr'}, {
     });
 });
 

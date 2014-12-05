@@ -239,7 +239,7 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
 
 function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTime, employeeNr) {
 
-    $scope.activityItems = Activity.query({fid: PatientService.curPatient.treatmentNumber});
+    $scope.activityItems = Activity.query({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
     $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
 
     $scope.deleteItem = function (item) {
@@ -266,7 +266,7 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
     $scope.fid = PatientService.curPatient.treatmentNumber;
     $scope.showTimeEdit = false;
 
-    $scope.durationItems = TimePeriode.query({fid: $scope.fid});
+    $scope.durationItems = TimePeriode.query({fid: $scope.fid, empNr: employeeNr});
     $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
 
     //Datum und Zeit für UI per "jetz" initiiert
@@ -290,7 +290,7 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
         newPeriode.$save().then(function(){
             //Ausbelndung und Liste aktualisieren
             $scope.showTimeEdit = false;
-            $scope.durationItems = TimePeriode.query({fid: $scope.fid});
+            $scope.durationItems = TimePeriode.query({fid: $scope.fid, empNr: employeeNr});
             $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
         });
     };
