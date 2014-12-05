@@ -198,7 +198,8 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
         var container = new Activity();
         container.employeeId = ConfigService.empNr;
         container.treatmentNumber = PatientService.curPatient.treatmentNumber;
-        container.activities = [{tarmedActivityId: item.tarmedId, number: amount}];
+        container.tarmedActivityId = item.tarmedId; 
+        container.number = amount;
         container.$save();
         item.capturedCount = item.capturedCount + amount;
         $ionicListDelegate.closeOptionButtons();
