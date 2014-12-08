@@ -246,8 +246,10 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTim
     $scope.deleteItem = function (item) {
         var index = $scope.activityItems.indexOf(item);
         if (index !== -1) {
-            $scope.activityItems.splice(index, 1);
-            Activity.delete({fid: item.activityId});
+            Activity.delete({fid: item.activityId},function(){
+                $scope.activityItems.splice(index, 1);
+                $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
+            });
         }
     };
 
