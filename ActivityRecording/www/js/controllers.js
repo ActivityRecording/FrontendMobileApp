@@ -1,5 +1,5 @@
-/* 
- * MLE Controllers
+/** 
+ * MLE Controller
  */
 'use strict';
 
@@ -12,32 +12,48 @@ function MenuController($scope, $route, $routeParams, $location) {
 }
 ;
 
-/*
- * Patienten Controller liefert alle treatmentCases, deren  States und den Patienten zurück
- * Der Filter ist mit dem Query-Parameter State implementiert
+/**
+ * Patienten-Controller
+ * Der Controller steuert die View templates/patients.html.
+ * Er stellt alle Behandlungsfaelle und die zugehoerigen Patienten
+ * fuer die Patientenauswahl zur Verfuegung. 
+ * Die Liste kann nach Zeitbereich und Zugehoerigkeit eingeschraenkt werden.
+ * Initial werden eigene Patienten des laufenden Tages angezeigt.
  */
 function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPatients, ConfigService, TimeService, PatientService) {
 
     $scope.timeService = TimeService;
     $scope.empNr = ConfigService.empNr;
 
-    //Select Option Model
+    /**
+     * Filter fuer den Zeitraum
+     */
     $scope.patTypes = [
         {name: 'Heute', value: 0},
         {name: 'Woche', value: 1},
         {name: 'Alle', value: 2}];
     $scope.patientFilter = $scope.patTypes[0];
 
+    /**
+     * Filter fuer die Zugehoerigkeit
+     */
     $scope.suppliedCases = [
         {name: 'Meine', value: $scope.empNr},
         {name: 'Alle', value: 0}];
     $scope.supplierFilter = $scope.suppliedCases[0];
 
-    //Initial List Ressource call
+    /**
+     * Setzt die initiale Liste der Patienten/Behandlungsfaelle
+     */
     $scope.patients = MyPatients.query({supplier: $scope.supplierFilter.value,
         state: $scope.patientFilter.value});
 
-    //Retrieve changed ressources
+    /**
+     * Aktualisiert die Patienteliste nach Veraenderung der Auswahlfilter.
+     * @param val Mitarbeiternummer
+     * @param state Zeitbereich
+     * @returns {undefined}
+     */
     $scope.updatePatientList = function (val, state) {
         if ($scope.empNr === val) {
             $scope.patients = MyPatients.query({supplier: val, state: state});
@@ -47,7 +63,13 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
         }
     };
 
-    //Bestaetigungs-Pop-Up
+    /**
+     * Zeigt eine Warnung an, dass noch eine Zeitmessung am Laufen ist.
+     * Eine Bestaetigung mit ja stoppt die Zeitmessung und wechselt in die
+     * Leistungsbearbeitung. 
+     * @param fid
+     * @returns {undefined}
+     */
     $scope.showConfirm = function (fid) {
         var self = this;
         self.fid = fid;
@@ -63,30 +85,34 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
                     $state.go('tabs.editoverview');
                 });
             } else {
-                //Nothing to do
+                // Nothing to do
             }
         });
     };
 
     /**
-     * Transition nach PatientTimeCtrl und startet die Zeitmessung
-     * oder eine Transition nach EditOverviewCntrl    
+     * Wechselt in die View "Zeitmessung" oder "Leistung bearbeiten2, je nachdem
+     * von welcher View aus auf die Liste navigiert wurde (Parameter edit=0 oder 1).
+     * Es wird die selektiet Behandlungsfall-Id uebergeben, mit der der gewaehlte Patient
+     * gelesen wird. Wird auf die Zeitmessung gewechselt, wird automatisch eine
+     * Zeitmessung gestartet. 
      * @param {type} fid
      */
     $scope.goTo = function (fid) {
-        //Pfad: "Zeitmessung starten"
+        // Zeitmessung starten
         if ($stateParams.edit == 0) {
             TimeService.start(fid);
             PatientService.curPatient.$promise.then(function () {
                 $state.go('tabs.patTime');
             });
         }
-        //Pfad: "Leistungen bearbeiten"
+        // Leistungen bearbeiten
         else {
-            //Gibt es eine laufende Zeitmessung
+            // Es gibt eine laufende Zeitmessung
             if ($scope.timeService.running && $scope.timeService.fid !== fid) {
                 this.showConfirm(fid);
             }
+            // Keine Zeitmessung aktiv - Wechsel kann direkt erfolgen
             else {
                 PatientService.updatePatient(fid);
                 PatientService.curPatient.$promise.then(function () {
@@ -95,22 +121,25 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
             }
         }
     };
-}
-;
+};
 
-/*
- * Controller für das Messen der Zeitstempeln der Leistungserfassung {start/stopp Timer}
- * In $stateParams wird der Parameter FId aus dem PatientsCntrl injected
+/**
+ * Zeitmessungs-Controller
+ * Der Controller steuert die View templates/patient.html.
+ * Er stellt die Funktionen zur Steuerung der Zeitmessung eines Behandlungsfalls
+ * zur Verfuegung.
  */
 function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
 
-    //Lokale ControllerVariabeln
+    /**
+     * Services
+     */
     $scope.timeService = TimeService;
     $scope.patientService = PatientService;
 
-    /*
-     * Beim Betätigen des "Zeitmessung starten" Buttons wird diese Funktion aufgerufen
-     * Es wird TimePeriode.startTime mit dem aktuellen Timestamp gesetzt
+    /**
+     * Beim Betaetigen des Buttons "Zeitmessung starten" wird auf dem TimeService
+     * die Zeitmessung zum aktuellen Patienten gestartet
      */
     $scope.startTimer = function () {
         if (!TimeService.running) {
@@ -119,9 +148,9 @@ function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
     };
 
     /*
-     * Beim Betätigen des "Zeitmessung stoppen" Buttons wird diese Funktion aufgerufen
-     * Es wird TimePeriode.endTime mit dem aktuellen Timestamp gesetzt und per
-     * Post-Request die TimePeriode an das Backend übermittelt
+     * Beim Betaetigen des Buttons "Zeitmessung stoppen" wird auf dem TimeService
+     * die Zeitmessung beendet und der gemessene Zeitraum wird an den Server
+     * uebermuittelt.
      */
     $scope.stopTimer = function () {
         if (TimeService.running) {
@@ -129,21 +158,29 @@ function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
         }
     };
 
+    /**
+     * Beim Betaetigen des Buttons "Zeitmessung abbrechen" wird die laufende 
+     * Zeitmessung auf dem TimeService abgebrochen.
+     */
     $scope.cancelTimer = function () {
         if (TimeService.running) {
             TimeService.cancel();
         }
     };
 
+    /**
+     * Navigation zum Leistungskatalog
+     */
     $scope.goToCatalogue = function () {
         $state.go('tabs.catalogue');
     };
-}
-;
+};
 
-/*
- * Catalogcontroller: Zeigt den Standard-Leistungskatalog an und 
- * übermittelt ausgewählte Leistungen des Benutzers an das Backend
+/**
+ * Leistungskatalog-Controller
+ * Der Controller kontrolliert die View templates/catalogue.html.
+ * Der Controller stellt den Standard-Leistungskatalog fuer die Anzeige zur Verfuegung
+ * und uebermittelt durch den Benutzer ausgewaehlte Leistungen an den Server.
  */
 function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, TimeService, PatientService, ConfigService) {
 
@@ -154,19 +191,19 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
     $scope.step = 1;
     $scope.cnt = 1;
 
-    /*
+    /**
      * Initial werden alle Leistungsgruppen ausgeblendet
      */
     $scope.visibleBase = false;
     $scope.visibleSpecial = false;
     $scope.visibleOthers = false;
 
-    /*
-     *  Addiert oder subtrahiert 1 zur Anzahl cnt der ausgewählten Leistung item.
+    /**
+     *  Addiert oder subtrahiert 1 zur Anzahl der ausgewählten Leistung.
      *  Das Total der ausgewaehlten und der bereits erfassten Anzahl (cnt + capturedCount)
      *  darf beim Erhoehen nicht groesser werden als die Kardinalitaet der Leistung.
      *  Beim Verringern der Anzahl darf diese nicht kleiner werden als 0.
-     *  Die Anzahl darf nicht 0 sein. 0 wird beim Subtrahieren und Addieren uebersprungen
+     *  Die Anzahl darf nicht 0 sein. 0 wird beim Subtrahieren und Addieren uebersprungen.
      */
     $scope.setCnt = function (item) {
         if (($scope.step > 0 && $scope.cnt + item.capturedCount < item.cardinality) ||
@@ -183,15 +220,24 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
         }
     };
 
+    /**
+     * Setzt den Zaehler zurueck und schaltet auf Addition um.
+     */
     $scope.reset = function () {
         $scope.cnt = 1;
         $scope.step = 1;
     };
 
+    /**
+     * Schaltet auf Addition oder Subtraktion um.
+     */
     $scope.onHold = function () {
         $scope.step = $scope.step * -1;
     };
 
+    /**
+     * Sendet die ausgewaehlten Leistungen an den Server
+     */
     $scope.submitData = function (amount, item) {
         if (amount === 0)
             return;
@@ -206,6 +252,11 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
         $scope.reset();
     };
 
+    /**
+     * Steuer die Anzeige der Leistungskatalog-Gruppen abhaengig vom mitgegebenen
+     * Parameter.
+     * @param type
+     */
     $scope.toggleCatLists = function (type) {
         //Grundleistungen
         if (type === 0) {
@@ -235,14 +286,24 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
                 $scope.visibleOthers = false;
         }
     };
-}
-;
+};
 
+/**
+ * Bearbeitungsuebersichts-Controller
+ * Der Controller kontrolliert die View templates/editoverview.html.
+ */
 function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTime, employeeNr) {
 
+    /**
+     * Initiale Anzeige der Zeiten und registrierten Leistungen
+     */
     $scope.activityItems = Activity.query({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
     $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
 
+    /**
+     * Loescht die ausgewaehlte Leistung und aktualisiert die Zeitenanzeige.
+     * @param item
+     */
     $scope.deleteItem = function (item) {
         var index = $scope.activityItems.indexOf(item);
         if (index !== -1) {
@@ -253,16 +314,27 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTim
         }
     };
 
+    /**
+     * Navigiert zum Leistungskatalog
+     * @returns {undefined}
+     */
     $scope.goToCatalogue = function () {
         $state.go('tabs.catalogue');
     };
-
+    
+    /**
+     * Navigiert zur Bearbeitung der Zeitraeume
+     * @returns {undefined}
+     */
     $scope.goToEditTime = function () {
         $state.go('tabs.edittime');
     };
-}
-;
+};
 
+/**
+ * Zeitbearbeitungs-Controller
+ * Der Controller kontrolliert die View templates/edittime.html.
+ */
 function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigService, CumulatedTime, employeeNr) {
 
     $scope.timeService = TimeService;
@@ -313,9 +385,12 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
             $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
         });
      };
-}
-;
+};
 
+/**
+ * Freigabe-Controller
+ * Der Controller kontrolliert die View templates/approval.html.
+ */
 function ApprovalCtrl($scope,$ionicListDelegate, $ionicPopup, Approval, MyPatients, TimeService, employeeNr) {
     
     $scope.timeService = TimeService;
@@ -351,9 +426,13 @@ function ApprovalCtrl($scope,$ionicListDelegate, $ionicPopup, Approval, MyPatien
         });
     
     };
-    };
+};
 
-    function HomeTabCtrl($scope, $state, TimeService) {
+/**
+ * Home-Controller
+ * Der Controller kontrolliert die View templates/home.html.
+ */
+function HomeTabCtrl($scope, $state, TimeService) {
         $scope.timeService = TimeService;
         $scope.goToPatients = function (mode) {
             $state.go('tabs.patients', {edit: mode});
@@ -361,15 +440,17 @@ function ApprovalCtrl($scope,$ionicListDelegate, $ionicPopup, Approval, MyPatien
         $scope.goToApproval = function () {
             $state.go('tabs.approval');
         };
-    }
-    ;
+};
 
-    function ConfigCtrl($scope, TimeService, ConfigService) {
+/**
+ * Konfigurations-Controller
+ * Der Controller kontrolliert die View templates/config.html.
+ */
+function ConfigCtrl($scope, TimeService, ConfigService) {
         $scope.timeService = TimeService;
         $scope.config = ConfigService;
 
         $scope.saveConfig = function () {
             ConfigService.saveConfig();
         };
-}
-;
+};
