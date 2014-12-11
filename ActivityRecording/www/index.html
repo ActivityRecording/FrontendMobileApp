@@ -250,7 +250,7 @@
         <div class="item item-divider"><h2>Zugeweisene Leistungen</h2></div>
         <ion-list show-delete="showDeleteButton">
         <ion-item ng-repeat="activityItem in activityItems" class="item item-button-right">
-        <h4>{{activityItem.tarmedActivityId}} {{activityItem.description}} {{activityItem.number}} {{activityItem.duration}}'</h4>  
+        <h4>{{activityItem.tarmedActivityId}} {{activityItem.description}} {{activityItem.number}} {{activityItem.duration}}<span class="badge badge-dark">{{activityItem.number}}</span></h4>  
         <button class="button button-clear button-assertive button-icon icon ion-minus-circled" 
         ng-click="deleteItem(activityItem)"></button>    
         </ion-item>
@@ -283,7 +283,7 @@
         <div ng-show="!showTimeEdit">
         <ion-list>
         <ion-item ng-repeat="durationItem in durationItems" class="item item-button-right">
-        <h4>{{durationItem.startTime|date:'dd.MM.yyyy : hh:mm'}}  {{durationItem.endTime|date:'- hh:mm'}}  {{durationItem.type}}'</h4>  
+        <h4>{{durationItem.startTime|date:'dd.MM.yyyy hh:mm'}}&nbsp;&nbsp;&nbsp&nbspDauer: {{durationItem.durationHours}}:{{durationItem.durationMinutes | numberFixedLen: 2}}</h4>  
         <button class="button button-clear button-assertive button-icon icon ion-minus-circled" ng-click="deleteItem(durationItem)"></button>    
         </ion-item>
         </ion-list>
