@@ -25,26 +25,20 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
     $scope.timeService = TimeService;
     $scope.empNr = ConfigService.empNr;
 
-    /**
-     * Filter fuer den Zeitraum
-     */
+    // Filter fuer den Zeitraum
     $scope.patTypes = [
         {name: 'Heute', value: 0},
         {name: 'Woche', value: 1},
         {name: 'Alle', value: 2}];
     $scope.patientFilter = $scope.patTypes[0];
 
-    /**
-     * Filter fuer die Zugehoerigkeit
-     */
+    // Filter fuer die Zugehoerigkeit
     $scope.suppliedCases = [
         {name: 'Meine', value: $scope.empNr},
         {name: 'Alle', value: 0}];
     $scope.supplierFilter = $scope.suppliedCases[0];
 
-    /**
-     * Setzt die initiale Liste der Patienten/Behandlungsfaelle
-     */
+    // Setzt die initiale Liste der Patienten/Behandlungsfaelle
     $scope.patients = MyPatients.query({supplier: $scope.supplierFilter.value,
         state: $scope.patientFilter.value});
 
@@ -91,7 +85,7 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
     };
 
     /**
-     * Wechselt in die View "Zeitmessung" oder "Leistung bearbeiten2, je nachdem
+     * Wechselt in die View "Zeitmessung" oder "Leistung bearbeiten", je nachdem
      * von welcher View aus auf die Liste navigiert wurde (Parameter edit=0 oder 1).
      * Es wird die selektiet Behandlungsfall-Id uebergeben, mit der der gewaehlte Patient
      * gelesen wird. Wird auf die Zeitmessung gewechselt, wird automatisch eine
@@ -131,9 +125,7 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
  */
 function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
 
-    /**
-     * Services
-     */
+    // Services
     $scope.timeService = TimeService;
     $scope.patientService = PatientService;
 
@@ -191,9 +183,7 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
     $scope.step = 1;
     $scope.cnt = 1;
 
-    /**
-     * Initial werden alle Leistungsgruppen ausgeblendet
-     */
+    // Initial werden alle Leistungsgruppen ausgeblendet
     $scope.visibleBase = false;
     $scope.visibleSpecial = false;
     $scope.visibleOthers = false;
@@ -253,7 +243,7 @@ function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, 
     };
 
     /**
-     * Steuer die Anzeige der Leistungskatalog-Gruppen abhaengig vom mitgegebenen
+     * Steuert die Anzeige der Leistungskatalog-Gruppen abhaengig vom mitgegebenen
      * Parameter.
      * @param type
      */
@@ -340,17 +330,17 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
     $scope.timeService = TimeService;
     $scope.fid = PatientService.curPatient.treatmentNumber;
     $scope.showTimeEdit = false;
-
+    // Setzt initial die Zeitraumliste und die Zeiten
     $scope.durationItems = TimePeriode.query({fid: $scope.fid, empNr: employeeNr});
     $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
 
-    //Datum und Zeit für UI per "jetz" initiiert
+    // initialisiere die Startzeit und Dauer für einen neuen Zeitraum
     $scope.startDate = PatientService.curPatient.startTime;
     $scope.duration = {min: 5};
 
-    /*
-     * Neuen Zeitraum gemäss Benutzereingabe übermitteln
-     * Direkter Zugriff auf Scope ist über bei Time / Date Input nicht mehr möglich
+    /**
+     * Neuen Zeitraum gemaess Benutzereingabe uebermitteln
+     * Direkter Zugriff auf Scope ist bei Time / Date Input nicht mehr moeglich
      */
     $scope.addDuration = function (min) {
         var from = PatientService.curPatient.startTime;
@@ -363,7 +353,7 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
         newPeriode.startTime = from;
         newPeriode.endTime = to;
         newPeriode.$save().then(function(){
-            //Ausbelndung und Liste aktualisieren
+            //Ausblendung und Liste aktualisieren
             $scope.showTimeEdit = false;
             $scope.durationItems = TimePeriode.query({fid: $scope.fid, empNr: employeeNr});
             $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
@@ -394,7 +384,7 @@ function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigSe
 function ApprovalCtrl($scope,$ionicListDelegate, $ionicPopup, Approval, MyPatients, TimeService, employeeNr) {
     
     $scope.timeService = TimeService;
-    //Alle offenen Fälle per Leistungserbringer
+    //Alle offenen Faelle per Leistungserbringer
     $scope.approvalItems = MyPatients.query({supplier: employeeNr, state: 2});
 
     $scope.listCanSwipe = true;
