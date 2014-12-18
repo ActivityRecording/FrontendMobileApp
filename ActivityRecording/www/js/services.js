@@ -117,7 +117,8 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
         self.startTimer = function() {
             service.seconds = 0;
             self.timer = $interval(function() {
-                service.seconds++;
+                service.seconds = Math.floor((new Date().getTime() - self.startTime.getTime()) / 1000);
+                //service.seconds++;
             }, 1000);
         };
   
@@ -127,8 +128,8 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
         self.submitTimePeriode = function(){
             self.newPeriode = new TimePeriode({'timePeriodId': null, 'type': 'TREATMENT', 'employeeId': ConfigService.empNr});
             self.newPeriode.treatmentNumber = service.fid;
-            self.newPeriode.startTime = self.startTime;
-            self.newPeriode.endTime = self.stopTime;
+            self.newPeriode.startTime = $filter('date')(self.startTime, 'yyyy-MM-ddTHH:mm:ss');
+            self.newPeriode.endTime = $filter('date')(self.stopTime, 'yyyy-MM-ddTHH:mm:ss');
             self.newPeriode.$save();
             self.newPeriode = undefined;
         };
@@ -140,7 +141,7 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
             } else if (service.fid){
                 service.stop();
             }
-            self.startTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
+            self.startTime = new Date();
             self.stopTime = null;
             service.fid = newFid;
             service.running = true;
@@ -153,7 +154,7 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
          * ueber die REST-Schnittstelle.
          */
         service.stop = function(){
-            self.stopTime = $filter('date')(new Date(), 'yyyy-MM-ddTHH:mm:ss');
+            self.stopTime = new Date();
             self.submitTimePeriode();
             service.fid = null;
             service.running = false;

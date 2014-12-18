@@ -283,7 +283,7 @@
         <div ng-show="!showTimeEdit">
         <ion-list>
         <ion-item ng-repeat="durationItem in durationItems" class="item item-button-right">
-        <h4>{{durationItem.startTime|date:'dd.MM.yyyy hh:mm'}}&nbsp;&nbsp;&nbsp&nbspDauer: {{durationItem.durationHours}}:{{durationItem.durationMinutes | numberFixedLen: 2}}</h4>  
+        <h4>{{durationItem.startTime|date:'dd.MM.yyyy HH:mm'}}&nbsp;&nbsp;&nbsp&nbspDauer: {{durationItem.durationHours}}:{{durationItem.durationMinutes | numberFixedLen: 2}}</h4>  
         <button class="button button-clear button-assertive button-icon icon ion-minus-circled" ng-click="deleteItem(durationItem)"></button>    
         </ion-item>
         </ion-list>
