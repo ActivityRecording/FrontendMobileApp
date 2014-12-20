@@ -292,14 +292,22 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTim
 
     /**
      * Loescht die ausgewaehlte Leistung und aktualisiert die Zeitenanzeige.
+     * Leistungen werden nicht gelöscht, sondern mit negativer Anzahl in der
+     * Datenbank hinzugefuegt.
      * @param item
      */
     $scope.deleteItem = function (item) {
         var index = $scope.activityItems.indexOf(item);
         if (index !== -1) {
-            Activity.delete({fid: item.activityId},function(){
+            var container = new Activity();
+            container.employeeId = item.employeeId;
+            container.treatmentNumber = item.treatmentNumber;
+            container.tarmedActivityId = item.tarmedActivityId; 
+            container.number = item.number * -1;
+            container.$save().then(function(){
                 $scope.activityItems.splice(index, 1);
                 $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
+                
             });
         }
     };
