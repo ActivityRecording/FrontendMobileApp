@@ -20,3 +20,7 @@
 .stopped{
     background-color: #B1DEFA;
 }
+
+.disabled{
+    color: grey;
+}

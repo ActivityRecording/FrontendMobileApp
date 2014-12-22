@@ -177,6 +177,7 @@ function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
 function CatalogueCtrl($scope, $ionicListDelegate, StandardCatalogue, Activity, TimeService, PatientService, ConfigService) {
 
     $scope.timeService = TimeService;
+    $scope.patientService = PatientService;
     $scope.fid = PatientService.curPatient.treatmentNumber;
     $scope.catItems = StandardCatalogue.query({empNr: ConfigService.empNr, fid: $scope.fid});
     $scope.listCanSwipe = true;
@@ -287,6 +288,7 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTim
     /**
      * Initiale Anzeige der Zeiten und registrierten Leistungen
      */
+    $scope.patientService = PatientService;
     $scope.activityItems = Activity.query({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
     $scope.times = CumulatedTime.get({fid: PatientService.curPatient.treatmentNumber, empNr: employeeNr});
 
@@ -336,6 +338,7 @@ function EditOverviewCtrl($scope, $state, Activity, PatientService, CumulatedTim
 function EditTimeCtrl($scope, TimePeriode, TimeService, PatientService, ConfigService, CumulatedTime, employeeNr) {
 
     $scope.timeService = TimeService;
+    $scope.patientService = PatientService;
     $scope.fid = PatientService.curPatient.treatmentNumber;
     $scope.showTimeEdit = false;
     // Setzt initial die Zeitraumliste und die Zeiten
