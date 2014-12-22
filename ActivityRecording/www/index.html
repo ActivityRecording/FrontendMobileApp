@@ -241,13 +241,13 @@
         </div>    
         </ion-nav-buttons>  
         <div class="text-center">
-        <h4>Gemessene Zeit: {{times.measuredHours}}:{{times.measuredMinutes | numberFixedLen: 2}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes | numberFixedLen: 2}}</h4>
+        <h4>Gemessen: {{times.measuredHours}}:{{times.measuredMinutes | numberFixedLen: 2}}:{{times.measuredSeconds | numberFixedLen: 2}} Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes | numberFixedLen: 2}}:{{times.allocatedSeconds | numberFixedLen: 2}}</h4>
         </div>
         <br>
         <a class="button button-block icon-left ion-plus-circled" ng-click="goToCatalogue()">Leistungen hinzufügen</a>
         <a class="button button-block icon-left ion-ios7-stopwatch-outline" ng-click="goToEditTime()">Zeiträume bearbeiten</a>
         <br>
-        <div class="item item-divider"><h2>Zugeweisene Leistungen</h2></div>
+        <div class="item item-divider"><h2>Zugewiesene Leistungen</h2></div>
         <ion-list show-delete="showDeleteButton">
         <ion-item ng-repeat="activityItem in activityItems" class="item item-button-right">
         <h4>{{activityItem.tarmedActivityId}} {{activityItem.description}} {{activityItem.number}} {{activityItem.duration}}<span class="badge badge-dark">{{activityItem.number}}</span></h4>  
@@ -269,7 +269,7 @@
         </ion-nav-buttons>             
         <ion-content>
         <div class="text-center">
-        <h4>Gemessene Zeit: {{times.measuredHours}}:{{times.measuredMinutes | numberFixedLen: 2}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes | numberFixedLen: 2}}</h4>
+        <h4>Gemessen: {{times.measuredHours}}:{{times.measuredMinutes | numberFixedLen: 2}}:{{times.measuredSeconds | numberFixedLen: 2}}   Verrechnet: {{times.allocatedHours}}:{{times.allocatedMinutes | numberFixedLen: 2}}:{{times.allocatedSeconds | numberFixedLen: 2}}</h4>
         </div>
         <br>
         <div class="item item-divider">
@@ -283,7 +283,7 @@
         <div ng-show="!showTimeEdit">
         <ion-list>
         <ion-item ng-repeat="durationItem in durationItems" class="item item-button-right">
-        <h4>{{durationItem.startTime|date:'dd.MM.yyyy HH:mm'}}&nbsp;&nbsp;&nbsp&nbspDauer: {{durationItem.durationHours}}:{{durationItem.durationMinutes | numberFixedLen: 2}}</h4>  
+        <h4>{{durationItem.startTime|date:'dd.MM.yyyy HH:mm'}}&nbsp;&nbsp;&nbsp&nbspDauer: {{durationItem.durationHours}}:{{durationItem.durationMinutes | numberFixedLen: 2}}:{{durationItem.durationSeconds | numberFixedLen: 2}}</h4>  
         <button class="button button-clear button-assertive button-icon icon ion-minus-circled" ng-click="deleteItem(durationItem)"></button>    
         </ion-item>
         </ion-list>
