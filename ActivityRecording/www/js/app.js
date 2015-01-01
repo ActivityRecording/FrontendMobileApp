@@ -58,17 +58,25 @@ ActivityRecordingApp.run(function($ionicPlatform, $state, TimeService) {
                 // Es wird angenommen, dass die NDEF-Message einen String mit 
                 // Fall- und Patienten-Id enthaelt, getrennt durch ein :
                 // Beispiel: 123456:9876543
-                var obj = nfc.bytesToString(ndefMessage[0].payload).substring(3);
-                var fidString = obj.substring(11,15);
+                var str = nfc.bytesToString(ndefMessage[0].payload);
+                var pos = str.indexOf(":");
+                if (pos === -1){
+                    alert('Die RFID enthält ein unbekanntes Datenformat');
+                    return;
+                } else {
+                    pos = pos + 1;
+                }
+                var len = str.length;
+                var fidString = str.substring(pos,len);
                 var fid = parseInt(fidString);
                 // Start der Zeitmessung
                 if($state.includes('tabs.patTime')){   
                     // NFC-Scan auf der Zeitmessungsuebersicht (Kein Seitenwechsel notwendig)
-                    TimeService.start(fid); 
+                    TimeService.start(fid, function(){}); 
                 } else {
                     //NFC-Scan aus allen anderen States
-                    TimeService.start(fid); 
-                    $state.go('tabs.patTime');   
+                    TimeService.start(fid, function(){$state.go('tabs.patTime');}); 
+                    //$state.go('tabs.patTime');   
                 }
 
             }, 

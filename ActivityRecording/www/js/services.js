@@ -25,10 +25,11 @@ services.factory('MyPatients', function($resource, url) {
 });
 
 /*
- * Der Rest-Service Patient gibt einen Behandlungsfall mit der Fallnummer fid zurueck
+ * Der Rest-Service Patient gibt einen Behandlungsfall mit der Fallnummer fid fuer
+ * den Leistungserbringer empNr zurueck
  */
 services.factory('Patient', function($resource, url ) {
-    return $resource(url + 'patients/treatment/:fid', {fid: '@fid'}, {
+    return $resource(url + 'patients/treatment/:fid/:empNr', {fid: '@fid', empNr: '@empNr'}, {
     });
 });
 
@@ -134,19 +135,21 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
             self.newPeriode = undefined;
         };
         
-        service.start = function(newFid){
+        service.start = function(newFid, callbackFunction){
             if (service.fid === newFid && service.running){
                 service.stop();
                 return;
             } else if (service.fid){
                 service.stop();
             }
-            self.startTime = new Date();
             self.stopTime = null;
-            service.fid = newFid;
-            service.running = true;
-            PatientService.updatePatient(newFid); 
-            self.startTimer();
+            PatientService.updatePatient(newFid, function(){
+                service.fid = newFid;
+                self.startTime = new Date();
+                service.running = true;
+                self.startTimer();
+                callbackFunction();
+            }); 
         };
         
         /*
@@ -187,18 +190,37 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
  * Behandlungsfall zur Verfuegung. Alle erfassten Zeitmessungen und Leistungen
  * beziehen sich auf den aktuell ausgewaehlten Patienen/Behandlungsfall.
  */
-services.factory('PatientService', function(Patient){
+services.factory('PatientService', function(Patient, employeeNr){
     var service = {};
     service.curPatient = null;
     
     var self = this;
     self.fid = null;   
     
-    service.updatePatient = function(fid){
-        if(fid !== self.fid){
-            service.curPatient = Patient.get({fid: fid});
-            self.fid = fid;
-        }
+    service.updatePatient = function(fid, onSuccess){
+            service.curPatient = 
+                Patient.get(
+                    {fid: fid, empNr: employeeNr}, 
+                    function(response){
+                        if (!response.treatmentNumber || !response.patientNumber){
+                            service.curPatient = null;
+                            self.fid = null; 
+                            alert('Der Behandlungfall wurde nicht gefunden');
+                        } else if (response.released || response.releasedBySupplier){
+                            service.curPatient = null;
+                            self.fid = null; 
+                            alert('Der Behandlungfall ist freigegeben');
+                        } 
+                        else {
+                            self.fid = fid;
+                            onSuccess();
+                        }
+                    }, 
+                    function(){
+                        service.curPatient = null;
+                        self.fid = null; 
+                        alert("Der Patientenservice funktioniert nicht");
+                    });
     }; 
     return service;
 });

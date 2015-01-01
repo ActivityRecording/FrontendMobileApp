@@ -74,10 +74,10 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
         confirmPopup.then(function (res) {
             if (res) {
                 TimeService.stop();
-                PatientService.updatePatient(self.fid);
-                PatientService.curPatient.$promise.then(function () {
-                    $state.go('tabs.editoverview');
-                });
+                PatientService.updatePatient(self.fid, function(){$state.go('tabs.editoverview');});
+                //PatientService.curPatient.$promise.then(function () {
+                //    $state.go('tabs.editoverview');
+                //});
             } else {
                 // Nothing to do
             }
@@ -95,7 +95,7 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
     $scope.goTo = function (fid) {
         // Zeitmessung starten
         if ($stateParams.edit == 0) {
-            TimeService.start(fid);
+            TimeService.start(fid, function(){});
             PatientService.curPatient.$promise.then(function () {
                 $state.go('tabs.patTime');
             });
@@ -108,7 +108,7 @@ function PatientsCtrl($scope, $ionicPopup, $stateParams, $state, Patients, MyPat
             }
             // Keine Zeitmessung aktiv - Wechsel kann direkt erfolgen
             else {
-                PatientService.updatePatient(fid);
+                PatientService.updatePatient(fid, function(){});
                 PatientService.curPatient.$promise.then(function () {
                     $state.go('tabs.editoverview');
                 });
@@ -135,7 +135,7 @@ function PatientTimeCtrl($scope, $state, TimeService, PatientService) {
      */
     $scope.startTimer = function () {
         if (!TimeService.running) {
-            TimeService.start(PatientService.curPatient.treatmentNumber);
+            TimeService.start(PatientService.curPatient.treatmentNumber, function(){});
         }
     };
 
