@@ -177,13 +177,13 @@
         <span class="badge badge-dark">{{catItem.capturedCount}}</span>
         </div>
         <div ng-if="!catItem.notSelectable">
-            <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
-            <ion-option-button class="button-light" on-hold="onHold()"
-                ng-class="{'button-balanced' : step > 0,'button-assertive' : step < 0}"
-                ng-click="setCnt(catItem)">{{cnt}}</ion-option-button>
-            <ion-option-button class="button-balanced ion-checkmark-round"
-                ng-click="submitData(cnt, catItem)">
-            </ion-option-button>
+        <ion-option-button class="button-light"> {{catItem.duration}}' </ion-option-button>
+        <ion-option-button class="button-light" on-hold="onHold()"
+        ng-class="{'button-balanced' : step > 0,'button-assertive' : step < 0}"
+        ng-click="setCnt(catItem)">{{cnt}}</ion-option-button>
+        <ion-option-button class="button-balanced ion-checkmark-round"
+        ng-click="submitData(cnt, catItem)">
+        </ion-option-button>
         </div>
         </ion-item>
         </ion-list>
