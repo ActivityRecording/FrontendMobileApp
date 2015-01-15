@@ -1,4 +1,5 @@
-FrontendMobileApp
-=================
+MLE Mobile App
+==============
 
-Html5 Cordova Javascript CSS3 Project with NFC Plugin
+Mobile App for mobile activity recording.
+Hybrid-App implemented with Html5, Cordova, Javascript, CSS3 and NFC Plugin.
