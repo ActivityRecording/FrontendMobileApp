@@ -138,6 +138,7 @@ services.factory('TimeService', function($filter, $interval, PatientService, Tim
         service.start = function(newFid, callbackFunction){
             if (service.fid === newFid && service.running){
                 service.stop();
+                callbackFunction();
                 return;
             } else if (service.fid){
                 service.stop();
